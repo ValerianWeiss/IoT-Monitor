@@ -13,28 +13,32 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import User from './../classes/User';
-import axios from 'axios';
+import RabbitSocket from './../classes/RabbitmqSocket'
+import RabbitmqSocket from './../classes/RabbitmqSocket';
 
 @Component
 export default class LoginPanel extends Vue {
     
     private username: string;
     private password: string;
+    private mqSocket: RabbitSocket;
 
     constructor(){
         super();
         this.username = '';
         this.password = '';
+        try {
+            this.mqSocket = new RabbitSocket();
+        } catch(e) {
+            console.log("could not create socket");
+            console.log(e);
+            
+        }
     }
 
     login()
     {
-        axios.post("http://localhost:12345/user", new User(this.username, this.password)).then(
-            function(response) : void {
-                alert(response);
-        });
-
-        //socketio.
+       
     }
 
     register()
