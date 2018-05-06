@@ -24,9 +24,6 @@ public class UserController {
     @Autowired
     private MessageSender sender;
 
-    @Autowired
-    private MessageReceiver receiver;
-
 
     @PutMapping
     public @ResponseBody boolean registerUser(@RequestBody User user) {
@@ -49,6 +46,5 @@ public class UserController {
     @GetMapping
     public void send() {
         sender.send();
-        System.out.println("Message is :" + receiver.getMessage());        
     }
 }

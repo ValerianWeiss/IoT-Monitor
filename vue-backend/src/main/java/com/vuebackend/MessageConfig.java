@@ -24,13 +24,14 @@ public class MessageConfig {
     @Autowired
     private static UserRepository unserRepository;
 
+
     String[] getQueueNames() {
         List<String> queueNames = new ArrayList<>();
         Iterable<User> users;
         try {
             users = unserRepository.findAll();
         } catch (NullPointerException e) {
-            System.out.println("cauht");
+            System.out.println("caught");
             queueNames.add("broadcast");
             return  queueNames.toArray(new String[queueNames.size()]);
         }
@@ -52,7 +53,6 @@ public class MessageConfig {
             Queue queue  = new Queue(queueName, false);
             queues.add(queue);
         }
-        queues.add(new Queue("broadcast"));
         return queues;
     }
 
@@ -75,17 +75,25 @@ public class MessageConfig {
 
     @Bean
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-                                            MessageListenerAdapter listenerAdapter) {
+                                             MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(getQueueNames());
+        
+        List<Queue> queues = queues();
+        List<String> queueNames = new ArrayList<>();
+        
+        for (Queue queue : queues) {
+            queueNames.add(queue.getName());    
+        }
+
+        container.setQueueNames(queueNames.toArray(new String[queueNames.size()]));
         container.setMessageListener(listenerAdapter);
         return container;
     }
 
     @Bean
     MessageListenerAdapter listenerAdapter(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receivedMessage");
+        return new MessageListenerAdapter(receiver, "onMessage");
     }
 
     @Bean
