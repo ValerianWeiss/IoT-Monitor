@@ -2,7 +2,6 @@ package com.controllers;
 
 import com.dbrepositories.UserRepository;
 import com.entities.User;
-import com.vuebackend.MessageReceiver;
 import com.vuebackend.MessageSender;
 
 import org.springframework.beans.factory.annotation.Autowired;

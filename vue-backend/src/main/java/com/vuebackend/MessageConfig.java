@@ -22,34 +22,21 @@ import com.entities.User;
 public class MessageConfig {
 
     @Autowired
-    private static UserRepository unserRepository;
+    private UserRepository userRepository;
 
-
-    String[] getQueueNames() {
-        List<String> queueNames = new ArrayList<>();
-        Iterable<User> users;
-        try {
-            users = unserRepository.findAll();
-        } catch (NullPointerException e) {
-            System.out.println("caught");
-            queueNames.add("broadcast");
-            return  queueNames.toArray(new String[queueNames.size()]);
-        }
-
-        if(users != null) {
-            for(User user : unserRepository.findAll()) {
-                queueNames.add(user.getId().toString());
-            }
-        }
-
-        queueNames.add("broadcast");
-        return queueNames.toArray(new String[queueNames.size()]);
-    }
 
     @Bean
     List<Queue> queues() {
         List<Queue> queues = new ArrayList<Queue>();
-        for (String queueName : getQueueNames()) {
+        List<String> queueNames = new ArrayList<>();
+
+        for(User user : userRepository.findAll()) {
+            queueNames.add(user.getId().toString());
+        }
+        
+        queueNames.add("broadcast");
+
+        for (String queueName : queueNames) {
             Queue queue  = new Queue(queueName, false);
             queues.add(queue);
         }
