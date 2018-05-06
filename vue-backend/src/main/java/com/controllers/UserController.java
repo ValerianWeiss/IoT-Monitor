@@ -2,7 +2,7 @@ package com.controllers;
 
 import com.dbrepositories.UserRepository;
 import com.entities.User;
-import com.vuebackend.MessageSender;
+import com.communication.RabbitMessageSender;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private MessageSender sender;
+    private RabbitMessageSender sender;
 
 
     @PutMapping

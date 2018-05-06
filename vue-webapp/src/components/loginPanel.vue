@@ -13,27 +13,20 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import User from './../classes/User';
-import RabbitSocket from './../classes/RabbitmqSocket'
-import RabbitmqSocket from './../classes/RabbitmqSocket';
+import WebSocket from './../classes/WebSocket'
 
 @Component
 export default class LoginPanel extends Vue {
     
     private username: string;
     private password: string;
-    private mqSocket: RabbitSocket;
+    private webSocket: WebSocket;
 
     constructor(){
         super();
         this.username = '';
         this.password = '';
-        try {
-            this.mqSocket = new RabbitSocket();
-        } catch(e) {
-            console.log("could not create socket");
-            console.log(e);
-            
-        }
+        this.webSocket = new WebSocket();
     }
 
     login()

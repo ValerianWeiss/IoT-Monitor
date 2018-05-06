@@ -1,9 +1,9 @@
-package com.vuebackend;
+package com.communication;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class MessageReceiver {
+public class RabbitMessageReceiver {
 
     private String message;
 

@@ -1,4 +1,4 @@
-package com.vuebackend;
+package com.communication;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
@@ -19,7 +19,7 @@ import com.dbrepositories.UserRepository;
 import com.entities.User;
 
 @Configuration
-public class MessageConfig {
+public class RabbitConfig {
 
     @Autowired
     private UserRepository userRepository;
@@ -79,7 +79,7 @@ public class MessageConfig {
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(MessageReceiver receiver) {
+    MessageListenerAdapter listenerAdapter(RabbitMessageReceiver receiver) {
         return new MessageListenerAdapter(receiver, "onMessage");
     }
 
