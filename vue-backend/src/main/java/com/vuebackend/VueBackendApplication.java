@@ -18,13 +18,4 @@ public class VueBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(VueBackendApplication.class, args);
 	}
-
-	@Bean
-	public FilterRegistrationBean<GenericFilterBean> corsFilterRegistrationBean() {
-		FilterRegistrationBean<GenericFilterBean> registrationBean = new FilterRegistrationBean<>(new CORSFilter());
-		registrationBean.setName("CORS Filter");
-		registrationBean.addUrlPatterns("/*");
-		registrationBean.setOrder(1);
-		return registrationBean;
-	}
 }

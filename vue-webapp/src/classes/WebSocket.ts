@@ -1,6 +1,6 @@
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
-import { Client } from 'stompjs';
+import { Client, Message } from 'stompjs';
 
 export default class WebSocket {
 
@@ -13,13 +13,22 @@ export default class WebSocket {
 
     private onConnect(frame?: Stomp.Frame) : void {
         console.log('Connected: ' + frame);
-        this.client.subscribe('topic/hello', function(message) {
-            console.log("got message" + message);
-        });
+        if(this.client == undefined) {
+            console.log("client is null");
+            
+        } else {
+            this.client.subscribe("topic/hello", function(message: Message) {
+                console.log("got message" + message);
+            });
+        }
     }
 
     private onError(message?: string) {
         console.log("Error occurred (WebSocket): " + message);
+    }
+
+    private subscribe() {
+        
     }
 }
 
