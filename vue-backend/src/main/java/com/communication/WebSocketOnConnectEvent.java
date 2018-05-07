@@ -1,18 +1,14 @@
 package com.communication;
 
-import com.controllers.ChatController;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
-public class WebSocketOnConnectEvent implements ApplicationListener<SessionConnectEvent> {
+@Component
+public class WebSocketOnConnectEvent implements ApplicationListener<SessionConnectedEvent> {
 
-    @Autowired
-    private ChatController controller;
-
-    public void onApplicationEvent(SessionConnectEvent event) {
-        System.out.println("A view connected: " + event.getMessage());
-        controller.sayHello();
+    @Override
+    public void onApplicationEvent(SessionConnectedEvent event) {
+        System.out.println("A view connected");
     }
 }

@@ -1,34 +1,28 @@
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
-import { Client, Message } from 'stompjs';
+import { Client, Message, Frame } from 'stompjs';
+import User from './User';
 
 export default class WebSocket {
 
     private client: Client;
 
-    constructor() {
-        this.client = Stomp.over(new SockJS("http://localhost:8090/vueAppWebSock"));
-        this.client.connect({}, this.onConnect, this.onError);
-    }
-
-    private onConnect(frame?: Stomp.Frame) : void {
-        console.log('Connected: ' + frame);
-        if(this.client == undefined) {
-            console.log("client is null");
-            
-        } else {
-            this.client.subscribe("topic/hello", function(message: Message) {
+    public constructor() {
+        let client = Stomp.over(new SockJS('http://localhost:8090/vueAppWebSock'));
+        client.connect({}, function(frame?: Frame) : void {
+            client.subscribe('/topic/hello', function(message: Message) : void {
                 console.log("got message" + message);
             });
-        }
+        }, 
+        function(message?: string) : void {
+            console.log('Error occurred (WebSocket): ' + message);
+        });
+
+        this.client = client;
     }
 
-    private onError(message?: string) {
-        console.log("Error occurred (WebSocket): " + message);
-    }
-
-    private subscribe() {
-        
+    public send(object: any, path: string) : void {
+        this.client.send('/vueapp/' + path, {}, JSON.stringify(object));
     }
 }
 
