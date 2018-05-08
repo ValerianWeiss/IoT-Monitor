@@ -1,5 +1,6 @@
 version: '3.1'
 services:
+
   database:
    image: mysql
     restart: always
@@ -8,13 +9,17 @@ services:
       MYSQL_USER: springuser
       MYSQL_PASSWORD: test123
       MYSQL_DATABASE: testDB
-  app:
-    build: ./vue-backed
+  
+  #a spring boot application
+  backend:
+    build: ./vue-backend
     restart: false
     ports:
       - 8090:8090
     depends_on:
       - database
-  rabbitmq:
-    build: rabbitmq
+
+#the vue application in a tomcat server	  
+  frontend:
+    build: ./vue-webapp
     restart: always

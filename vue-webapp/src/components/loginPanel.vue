@@ -14,23 +14,22 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import User from './../classes/User';
 import WebSocket from './../classes/WebSocket';
+import Axios from 'axios';
 
 @Component
 export default class LoginPanel extends Vue {
     
     private username: string;
     private password: string;
-    private webSocket: WebSocket;
 
     public constructor() {
         super();
         this.username = '';
         this.password = '';
-        this.webSocket = new WebSocket();
     }
 
     private login() : void {
-
+        
     }   
 
     private register() : void {
