@@ -16,13 +16,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
 
     @PutMapping
-    public void registerUser(@RequestBody User user) {
-        if(userRepository.findByUsername(user.getUsername()).isPresent()) {
+    public @ResponseBody boolean registerUser(@RequestBody User user) {
+        if(!userRepository.findByUsername(user.getUsername()).isPresent()) {
             userRepository.save(user);
+            
+            return true;
         }
+        return false;
     }
 
     @PostMapping
