@@ -2,15 +2,16 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { Client, Message, Frame } from 'stompjs';
 import User from './User';
+import Config from '../appConfig.json';
 
 export default class WebSocket {
 
     private client: Client;
 
     public constructor() {
-        let client = Stomp.over(new SockJS('http://localhost:8090/vueAppWebSock'));
+        let client = Stomp.over(new SockJS(Config.websocketUrl));
         client.connect({}, function(frame?: Frame) : void {
-            client.subscribe('/topic/hello', function(message: Message) : void {
+            client.subscribe(Config.websocketTopicRoot + '/hello', function(message: Message) : void {
                 console.log("got message" + message);
             });
         }, 
@@ -22,7 +23,7 @@ export default class WebSocket {
     }
 
     public send(object: any, path: string) : void {
-        this.client.send('/vueapp/' + path, {}, JSON.stringify(object));
+        this.client.send(Config.websocketSendPrefix + path, {}, JSON.stringify(object));
     }
 }
 

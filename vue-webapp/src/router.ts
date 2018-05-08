@@ -10,10 +10,12 @@ const Router = new VueRouter({
   routes: [
     {   
         path: '/',
+        name: 'root',
         component: login,
     },
     {
         path: '/home',
+        name: 'home',
         component: home,
     }
   ]

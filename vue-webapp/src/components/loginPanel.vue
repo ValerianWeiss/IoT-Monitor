@@ -1,8 +1,8 @@
 <template>
     <div id="loginWrapper">
         <form id="loginForm" autocomplete="off">
-            <input class="loginInput" type="text" v-model="username" placeholder="Username"/>
-            <input class="loginInput" type="password" v-model="password" placeholder="Password"/>
+            <input class="loginInput" type="text" v-model="p_username" placeholder="p_Username"/>
+            <input class="loginInput" type="password" v-model="p_password" placeholde_r="Password"/>
             <button id="loginBtn" class="btn" type="button" @click="login">Login</button>
             <button id="registerBtn" class="btn" type="button" @click="register">Register</button>
         </form>
@@ -14,22 +14,28 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import User from './../classes/User';
 import WebSocket from './../classes/WebSocket';
-import Axios from 'axios';
+import Axios,{ AxiosResponse } from 'axios';
+import LoginMessage from '../classes/communication/LoginMessage';
+import ResponseMessage from '../classes/communication/ResponseMessage';
+import Router from '../router';
+import Config from '../appConfig.json';
 
 @Component
 export default class LoginPanel extends Vue {
     
-    private username: string;
-    private password: string;
+    private p_username: string = '';
+    private p_password: string = '';
 
-    public constructor() {
-        super();
-        this.username = '';
-        this.password = '';
-    }
 
     private login() : void {
-        
+        if(this.p_username != undefined && this.p_password != undefined) {
+            Axios.put(Config.backendUrl + 'user', new LoginMessage(this.p_username, this.p_password)).
+                then(function(response : AxiosResponse<ResponseMessage>) : void {
+                    if(response.data.success) {
+                        Router.push("home");
+                    }
+                });
+        }
     }   
 
     private register() : void {
