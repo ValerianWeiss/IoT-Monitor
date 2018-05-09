@@ -1,8 +1,8 @@
 <template>
     <div id="loginWrapper">
         <form id="loginForm" autocomplete="off">
-            <input class="loginInput" type="text" v-model="p_username" placeholder="p_Username"/>
-            <input class="loginInput" type="password" v-model="p_password" placeholde_r="Password"/>
+            <input class="loginInput" type="text" v-model="username" placeholder="Username"/>
+            <input class="loginInput" type="password" v-model="password" placeholder="Password"/>
             <button id="loginBtn" class="btn" type="button" @click="login">Login</button>
             <button id="registerBtn" class="btn" type="button" @click="register">Register</button>
         </form>
@@ -15,24 +15,27 @@ import Component from 'vue-class-component';
 import User from './../classes/User';
 import WebSocket from './../classes/WebSocket';
 import Axios,{ AxiosResponse } from 'axios';
-import LoginMessage from '../classes/communication/LoginMessage';
+import LoginRequest from '../classes/communication/LoginRequest';
 import ResponseMessage from '../classes/communication/ResponseMessage';
 import Router from '../router';
 import Config from '../appConfig.json';
+import { String } from 'typescript-string-operations';
 
 @Component
 export default class LoginPanel extends Vue {
     
-    private p_username: string = '';
-    private p_password: string = '';
+    private username: string = String.Empty;
+    private password: string = String.Empty;
 
 
     private login() : void {
-        if(this.p_username != undefined && this.p_password != undefined) {
-            Axios.put(Config.backendUrl + 'user', new LoginMessage(this.p_username, this.p_password)).
+        if(this.username != String.Empty && this.password != String.Empty) {
+            Axios.put(Config.backendUrl + '/user', new LoginRequest(this.username, this.password)).
                 then(function(response : AxiosResponse<ResponseMessage>) : void {
                     if(response.data.success) {
                         Router.push("home");
+                    } else {
+                        console.log(response.data.cause);
                     }
                 });
         }

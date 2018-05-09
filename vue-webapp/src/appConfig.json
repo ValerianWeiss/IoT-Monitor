@@ -1,6 +1,6 @@
 {
     "backendUrl" : "http://localhost:8090",
     "websocketUrl" : "http://localhost:8090/vueAppWebSock",
-    "websocketSendPrefix" : "/vueapp/",
-    "websocketTopicRoot" : "/topic/"
+    "websocketSendPrefix" : "/vueapp",
+    "websocketTopicRoot" : "/topic"
 }
