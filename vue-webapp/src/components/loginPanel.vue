@@ -48,7 +48,7 @@ export default class LoginPanel extends Vue {
 </script>
 
 <style scoped>
-#loginWrapper{
+#loginWrapper {
     position: absolute;
     margin: 20vh 50vw;
     transform: translateX(-50%);
@@ -56,7 +56,7 @@ export default class LoginPanel extends Vue {
     width: 250px;
 }
 
-.loginInput{
+.loginInput {
     width: 100%;
     margin: 0;
     padding: 5px 0 2px 0;
@@ -64,7 +64,6 @@ export default class LoginPanel extends Vue {
     border: 0;
     border-bottom: 1px solid #000;
     outline: 0;
-    font-style: italic;
     font-size: 12px;
     font-weight: 400;
     letter-spacing: 1px;
@@ -74,6 +73,13 @@ export default class LoginPanel extends Vue {
 
 .loginInput::placeholder{
     color: dimgray;
+    font-style: italic;
+}
+
+.btn {
+    margin: 10px 0 0 0;
+    width: 100%;
+    height: 22px;        
 }
 </style>
 

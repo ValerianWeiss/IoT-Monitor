@@ -29,14 +29,14 @@ export default class Sideheading extends Vue {
     float: left;
 }
 
-#sideHadingContainer{
+#sideHadingContainer {
 	height: auto;
     width: 100px;
     margin: 0;
     padding: 300px 60px 20px 20px;
 }
 
-#sideHeading{
+#sideHeading {
 	font-family: 'Archivo Black', sans-serif;
 	font-size: 600%;
 	text-align: right;
