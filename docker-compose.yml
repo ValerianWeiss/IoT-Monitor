@@ -2,7 +2,7 @@ version: '3.1'
 services:
 
   database:
-   image: mysql
+    image: mysql
     restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"      
@@ -13,11 +13,14 @@ services:
   #a spring boot application
   backend:
     build: ./vue-backend
-    restart: false
+    restart: always
     ports:
       - 8090:8090
     depends_on:
       - database
+
   webserver:
     build: ./vue-webapp
-      restart: always
+    restart: always
+    depends_on:
+      - backend

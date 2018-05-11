@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import login from './components/login.vue';
-import home from './components/home.vue'
+import home from './components/home.vue';
 
 Vue.use(VueRouter);
 
