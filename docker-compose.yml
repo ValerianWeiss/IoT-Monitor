@@ -18,8 +18,6 @@ services:
       - 8090:8090
     depends_on:
       - database
-
-#the vue application in a tomcat server	  
-  frontend:
+  webserver:
     build: ./vue-webapp
-    restart: always
+      restart: always
