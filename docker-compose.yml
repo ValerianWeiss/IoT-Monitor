@@ -9,6 +9,8 @@ services:
       MYSQL_USER: springuser
       MYSQL_PASSWORD: test123
       MYSQL_DATABASE: testDB
+    ports:
+      - 3306:3306
   
   #a spring boot application
   backend:
@@ -22,5 +24,7 @@ services:
   webserver:
     build: ./vue-webapp
     restart: always
+    ports:
+      - 8080:8080
     depends_on:
       - backend
