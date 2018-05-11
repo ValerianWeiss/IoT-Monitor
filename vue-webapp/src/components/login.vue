@@ -1,7 +1,6 @@
 <template>
 	<div id="root">
 		<loginPanel></loginPanel>
-		<sideheading :heading="heading"></sideheading>
 		<div id="wrapper">
 			<div id="trapezoid"></div>
 			<div id="triangle"></div>
@@ -12,20 +11,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import sideheading from './sideheading.vue';
 import loginPanel from './loginPanel.vue';
 import { over } from 'stompjs';
-import { constants } from 'http2';
 
 @Component({
-	components:{
-		sideheading,
+	components: {
 		loginPanel,
 	}
 })
 export default class Login extends Vue {
-	
-	private heading: string = 'Login';
+
 }
 </script>
 

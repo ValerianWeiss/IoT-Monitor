@@ -13,7 +13,10 @@ import { Prop } from 'vue-property-decorator'
 
 @Component
 export default class Sideheading extends Vue {
-	@Prop() heading: string;
+
+	get heading() : string {
+		return this.$store.getters.getHeading;
+	}
 
 	constructor(){
 		super();

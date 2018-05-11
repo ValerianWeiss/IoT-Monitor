@@ -21,6 +21,7 @@ services:
     depends_on:
       - database
 
+  #a tomcat servlet which contains the vue app
   webserver:
     build: ./vue-webapp
     restart: always
