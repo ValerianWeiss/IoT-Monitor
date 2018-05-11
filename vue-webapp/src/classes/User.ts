@@ -1,9 +1,22 @@
-export default class User{
-    private username: string;
-    private password: string
+export default class User {
+
+    //a UUID which is getting retrieved from the server application
+    private sessionToken?: string;
+    private username?: string;
     
-    constructor(username: string, password: string){
+    constructor(username?: string, userToken?: string) {
+        this.sessionToken = userToken;
         this.username = username;
-        this.password = password;
+    }
+    
+    public getUserToken() : string | undefined {
+        return this.sessionToken;
+    }
+
+    public setUserToken(token: string | undefined) {
+        if(token == undefined) {
+            throw new TypeError("tried to set usertoken to undefined");
+        }
+        this.sessionToken = token;
     }
 }

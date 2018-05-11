@@ -7,11 +7,9 @@ body{
 .btn{
     border: 0;
     border-radius: 2px;
-    width: 100%;
     font-size: 14px;
     text-transform: uppercase;
     font-weight: 600;
-    margin: 10px 0 0 0;
     outline: 0;
     letter-spacing: 1px;
 }

@@ -24,23 +24,23 @@ export default class Navigationbar extends Vue {
 
 <style scoped>
 
-.mainNavigation{
+.mainNavigation {
     width: auto;
     height: 50px;
     background-color: black;
 }
 
-.mainNavigation ul{
+.mainNavigation ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-.mainNavigation ul li{
+.mainNavigation ul li {
     float: left;
 }
 
-.navigationWrapper{
+.navigationWrapper {
     margin: auto;
     width: 70%;
 }

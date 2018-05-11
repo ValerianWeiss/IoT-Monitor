@@ -1,20 +1,31 @@
 version: '3.1'
 services:
+
   database:
-   image: mysql
+    image: mysql
     restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"      
       MYSQL_USER: springuser
       MYSQL_PASSWORD: test123
       MYSQL_DATABASE: testDB
-  app:
-    build: ./vue-backed
-    restart: false
+    ports:
+      - 3306:3306
+  
+  #a spring boot application
+  backend:
+    build: ./vue-backend
+    restart: always
     ports:
       - 8090:8090
     depends_on:
       - database
-  rabbitmq:
-    build: rabbitmq
+
+  #a tomcat servlet which contains the vue app
+  webserver:
+    build: ./vue-webapp
     restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - backend

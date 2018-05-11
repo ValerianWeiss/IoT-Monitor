@@ -1,0 +1,1 @@
+{"version":3,"file":"ResponseMessage.js","sourceRoot":"","sources":["../../../src/classes/communication/ResponseMessage.ts"],"names":[],"mappings":"AAAA;IAAA;IAaA,CAAC;IAPG,sBAAW,oCAAO;aAAlB;YACI,OAAO,IAAI,CAAC,QAAQ,CAAC;QACzB,CAAC;;;OAAA;IAED,sBAAW,kCAAK;aAAhB;YACI,OAAO,IAAI,CAAC,MAAM,CAAA;QACtB,CAAC;;;OAAA;IACL,sBAAC;AAAD,CAAC,AAbD,IAaC"}
