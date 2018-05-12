@@ -1,7 +1,6 @@
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { Client, Message, Frame } from 'stompjs';
-import User from './User';
 import Config from '../appConfig.json';
 
 export default class WebSocket {

@@ -4,12 +4,16 @@ export default class User {
     private sessionToken?: string;
     private username?: string;
     
-    constructor(username?: string, userToken?: string) {
+    public constructor(username?: string, userToken?: string) {
         this.sessionToken = userToken;
         this.username = username;
     }
     
-    public getUserToken() : string | undefined {
+    public getUsername() : string | undefined {
+        return this.username;
+    }
+
+    public getSessionToken() : string | undefined {
         return this.sessionToken;
     }
 

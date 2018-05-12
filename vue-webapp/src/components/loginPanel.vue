@@ -15,8 +15,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import User from './../classes/User';
-import WebSocket from './../classes/WebSocket';
-import Axios,{ AxiosResponse, AxiosPromise } from 'axios';
+import Axios,{ AxiosResponse } from 'axios';
 import LoginRequest from '../classes/communication/LoginRequest';
 import RegisterRequest from '../classes/communication/RegisterRequest';
 import ResponseMessage from '../classes/communication/ResponseMessage';
