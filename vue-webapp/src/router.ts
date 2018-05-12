@@ -36,7 +36,7 @@ Router.beforeEach((to, from, next) => {
 		Store.getters.isLoggedIn.
 			then((response : AxiosResponse<ResponseMessage>) : void => {
 				if(response.data.success) {
-					Router.push(to);
+					Router.push(to.path);
 					Store.commit('setHeading', to.name);
 				} else {
 					Router.push('/');

@@ -61,10 +61,11 @@ export default class LoginPanel extends Vue {
     private login(response : AxiosResponse<ResponseMessage>) : void {
         if(response.data.success) {
             try {
-                let currentUser: User = new User(response.data.payload.payload,
-                                                this.username);
+                let currentUser: User = new User(this.username,
+                                            response.data.payload);
+                
                 Store.commit('setUser', currentUser);
-                Router.push("home");
+                Router.push('home');
             } catch (e) {
                 throw new Error("Invalid response format");
             }
