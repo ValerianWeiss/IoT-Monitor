@@ -8,7 +8,7 @@ The goal of the project is, to create a distributed system in which each part of
 
 ### Required things
 To build the project you have to install the following things
-* `java jdk` to build and run the
+* `java jdk` to build and run the Spring Boot application
 * `gradle` to build the Spring Boot app (I'm using version 4.6).
 * `npm` to build and run the Vue application.
 * `nodejs` is used by `npm` to build the Vue app (I'm using version 8.11.1).
