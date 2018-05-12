@@ -7,7 +7,7 @@ The goal of the project is, to create a distributed system in which each part of
 ## How to build and run
 
 ### Required things
-To build the project you have to install the following things
+To build the project you have to install the following things.
 * `java jdk` to build and run the Spring Boot application
 * `gradle` to build the Spring Boot app (I'm using version 4.6).
 * `npm` to build and run the Vue application.
@@ -27,20 +27,20 @@ To build the Spring Boot microservice, navigate into the vue-backend directory. 
 ```bash
 gradle build
 ```
-The Spring Boot app will be build and all tests executed. The .jar will be in the <$ProjectDir>/vue-backend/build/libs/ folder.
+The Spring Boot app will be build and all tests are getting executed. The .jar file will be in the <$ProjectDir>/vue-backend/build/libs/ folder.
 
 > ##### Note:
-> The database must already be running that all tests pass. You can just build the application without running any tests with:
+> The database must already be running that the application passes all tests. You can just build the application without running any tests with:
 > ```bash
 > gradle build -x test
 > ```
 
 To run the application locally now, you have to start the MySql database, the Spring Boot app and the Vue app.
-To start the Spring Boot app navigate to the vue-backend folder and run:
+To start the Spring Boot app, navigate to the vue-backend folder and run:
 ```bash
 java -jar /build/libs/vue-backend-0.0.1.jar
 ```
-To run the Vue application navigate into the vue-webapp folder and run:
+To run the Vue application, navigate into the vue-webapp folder and run:
 ```bash
 npm run dev
 ```
