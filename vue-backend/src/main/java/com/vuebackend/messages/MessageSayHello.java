@@ -1,4 +1,4 @@
-package com.messages;
+package com.vuebackend.messages;
 
 public class MessageSayHello {
     

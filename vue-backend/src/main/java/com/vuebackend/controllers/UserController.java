@@ -1,19 +1,19 @@
-package com.controllers;
+package com.vuebackend.controllers;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import com.communication.messages.ErrorCause;
-import com.communication.messages.ErrorCode;
-import com.communication.messages.FailureResponseMessage;
-import com.communication.messages.LoginRequest;
-import com.communication.messages.RegisterRequest;
-import com.communication.messages.ResponseMessage;
-import com.communication.messages.SuccessResponseMessage;
-import com.dbrepositories.SessionRepository;
-import com.dbrepositories.UserRepository;
-import com.entities.Session;
-import com.entities.User;
+import com.vuebackend.communication.messages.ErrorCause;
+import com.vuebackend.communication.messages.ErrorCode;
+import com.vuebackend.communication.messages.FailureResponseMessage;
+import com.vuebackend.communication.messages.LoginRequest;
+import com.vuebackend.communication.messages.RegisterRequest;
+import com.vuebackend.communication.messages.ResponseMessage;
+import com.vuebackend.communication.messages.SuccessResponseMessage;
+import com.vuebackend.dbrepositories.SessionRepository;
+import com.vuebackend.dbrepositories.UserRepository;
+import com.vuebackend.entities.Session;
+import com.vuebackend.entities.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

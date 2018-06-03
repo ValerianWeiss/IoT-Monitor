@@ -1,4 +1,4 @@
-package com.communication.messages;
+package com.vuebackend.communication.messages;
 
 public class LoginRequest {
     

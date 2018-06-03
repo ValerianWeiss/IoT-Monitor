@@ -1,8 +1,8 @@
-package com.dbrepositories;
+package com.vuebackend.dbrepositories;
 
 import java.util.Optional;
 
-import com.entities.Session;
+import com.vuebackend.entities.Session;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SessionRepository extends CrudRepository<Session, Long> {

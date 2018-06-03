@@ -1,8 +1,8 @@
-package com.dbrepositories;
+package com.vuebackend.dbrepositories;
 
 import java.util.Optional;
 
-import com.entities.User;
+import com.vuebackend.entities.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long> {
