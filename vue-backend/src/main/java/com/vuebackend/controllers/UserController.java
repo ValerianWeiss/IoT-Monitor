@@ -3,31 +3,26 @@ package com.vuebackend.controllers;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
-import com.vuebackend.communication.messages.ErrorCause;
+import com.vuebackend.entities.User;
 import com.vuebackend.communication.messages.ErrorCode;
+import com.vuebackend.communication.messages.ErrorCause;
 import com.vuebackend.communication.messages.FailureResponseMessage;
 import com.vuebackend.communication.messages.LoginRequest;
 import com.vuebackend.communication.messages.RegisterRequest;
-import com.vuebackend.communication.messages.ResponseMessage;
-import com.vuebackend.communication.messages.SuccessResponseMessage;
-import com.vuebackend.dbrepositories.SessionRepository;
 import com.vuebackend.dbrepositories.UserRepository;
-import com.vuebackend.entities.Session;
-import com.vuebackend.entities.User;
-import com.vuebackend.security.JWTSecurity;
+import com.vuebackend.security.JWTTokenUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/user")
@@ -35,35 +30,62 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    UserRepository userRepository;
 
     @PutMapping
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        authenticate(loginRequest.getUsername(), loginRequest.getPassword());
-        return (ResponseEntity<?>) ResponseEntity.ok(getToken(loginRequest.getUsername()));
-    }
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
+            throws IllegalArgumentException, UnsupportedEncodingException {
 
-    private String getToken(@RequestParam String issuer) {
-        try {
-			return JWTSecurity.createJWTToken(issuer);
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-            e.printStackTrace();
+        if (authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
+            return ResponseEntity.ok(getToken(loginRequest.getUsername()));
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        return null;
     }
 
-    private void authenticate(String username, String password) {
+    @PostMapping
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest)
+            throws IllegalArgumentException, UnsupportedEncodingException {
+
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(new FailureResponseMessage(new ErrorCause(ErrorCode.usernameAlreadyTaken)));
+        }
+
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(new FailureResponseMessage(new ErrorCause(ErrorCode.emailAlreadyTaken)));
+        }
+
+        if (registerRequest.passwordsNotEqual()) {
+            return ResponseEntity.badRequest()
+                    .body(new FailureResponseMessage(new ErrorCause(ErrorCode.passwordsEqual)));
+        }
+
+        User user = new User(registerRequest.getUsername(),
+                new BCryptPasswordEncoder().encode(registerRequest.getPassword()), registerRequest.getEmail());
+
+        userRepository.save(user);
+        return login(new LoginRequest(user.getUsername(), registerRequest.getPassword()));
+    }
+
+    private String getToken(String subject) throws IllegalArgumentException, UnsupportedEncodingException {
+
+        return JWTTokenUtils.create(subject);
+    }
+
+    private boolean authenticate(String username, String password) {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
 
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (Exception e) {
-            System.out.println("could not authenticate user");
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            if(!encoder.matches(password, user.get().getPassword())) {
+                System.out.println("password comparision failed");
+            }
+            return encoder.matches(password, user.get().getPassword());
         }
+        return false;
     }
 }
