@@ -10,9 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("com.vuebackend.dbrepositories")
 @EntityScan("com.vuebackend.entities")
 @SpringBootApplication
-public class VueBackendApplication {
+public class VueBackendRecourcesApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VueBackendApplication.class, args);
+        SpringApplication.run(VueBackendRecourcesApplication.class, args);
 	}
 }
