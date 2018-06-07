@@ -45,24 +45,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 }
             }).and()
             // don't create session
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests().antMatchers("/vueAppWebSock/**").permitAll();
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Custom JWT based security filter
         JwtAuthorizationFilter authenticationFilter = new JwtAuthorizationFilter(tokenHeader);
         httpSecurity.addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Override
-    public void configure(WebSecurity webSecurity) throws Exception {
-        // AuthenticationTokenFilter will ignore the below paths
-        webSecurity.ignoring().antMatchers("/vueAppWebSock/**");
-    }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(("http://localhost:8080")));
+        configuration.setAllowedOrigins(Arrays.asList(("${allowedOrigins}")));
         configuration.setAllowedMethods(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
