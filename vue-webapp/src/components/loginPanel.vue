@@ -14,9 +14,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import User from './../classes/User';
-import WebSocket from './../classes/WebSocket';
-import Axios,{ AxiosResponse, AxiosPromise } from 'axios';
+import Axios,{ AxiosResponse } from 'axios';
 import LoginRequest from '../classes/communication/LoginRequest';
 import RegisterRequest from '../classes/communication/RegisterRequest';
 import ResponseMessage from '../classes/communication/ResponseMessage';
@@ -34,7 +32,7 @@ export default class LoginPanel extends Vue {
     private email: string = String.Empty;
     private loginContext: boolean = true;
 
-    private userUrl: string = Config.backendUrl + '/user';
+    private userUrl: string = Config.backendAuthUrl + '/user';
 
 
     private onLogin() : void {
@@ -62,10 +60,9 @@ export default class LoginPanel extends Vue {
     private login(response : AxiosResponse<ResponseMessage>) : void {
         if(response.data.success) {
             try {
-                let currentUser: User = new User(response.data.payload.payload,
-                                                this.username);
-                Store.commit('setUser', currentUser);
-                Router.push("home");
+                localStorage.setItem("ACCESS_TOKEN", response.data.payload);
+                Store.commit('setLoggedIn', true);
+                Router.push('home');
             } catch (e) {
                 throw new Error("Invalid response format");
             }

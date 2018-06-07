@@ -1,4 +1,4 @@
-import ErrorCause from './ErrorCause';
+import ErrorCause from './Error';
 
 export default class ResponseMessage {
     

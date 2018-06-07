@@ -1,6 +1,6 @@
 version: '3.1'
 services:
-
+  # MySql database
   database:
     image: mysql
     restart: always
@@ -12,16 +12,28 @@ services:
     ports:
       - 3306:3306
   
-  #a spring boot application
+  # Login service
   backend:
-    build: ./vue-backend
+    build: ./vue-backend-auth
+    restart: always
+    ports:
+      - 8091:8091
+
+  # REST Api recurces service
+  backend:
+    build: ./vue-backend-resources
     restart: always
     ports:
       - 8090:8090
-    depends_on:
-      - database
 
-  #a tomcat servlet which contains the vue app
+  # Websocket Service
+  backend:
+    build: ./vue-backend-resources
+    restart: always
+    ports:
+      - 8090:8090
+
+  # A tomcat servlet which contains the vue app
   webserver:
     build: ./vue-webapp
     restart: always
