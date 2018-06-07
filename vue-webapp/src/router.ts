@@ -32,19 +32,9 @@ const Router = new VueRouter({
 });
 
 Router.beforeEach((to, from, next) => {
-	if(to.name != 'login') {
-		Store.getters.isLoggedIn.
-			then((response : AxiosResponse<ResponseMessage>) : void => {
-				if(response.data.success) {
-					Router.push(to.path);
-					Store.commit('setHeading', to.name);
-				} else {
-					Router.push('/');
-					Store.commit('setHeading', 'login');
-				}
-			}).catch(onHttpConnectionError);
-	} else {
-		Store.commit('setHeading', "login");
+	if(Store.getters.isLoggedIn && to.name != 'login') {
+		console.log("push to " + to.path + " heading : " + to.name);
+		Store.commit('setHeading', to.name);
 	}
 	next();
 });

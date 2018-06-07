@@ -14,7 +14,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import User from './../classes/User';
 import Axios,{ AxiosResponse } from 'axios';
 import LoginRequest from '../classes/communication/LoginRequest';
 import RegisterRequest from '../classes/communication/RegisterRequest';
@@ -61,9 +60,8 @@ export default class LoginPanel extends Vue {
     private login(response : AxiosResponse<ResponseMessage>) : void {
         if(response.data.success) {
             try {
-                let currentUser: User = new User(this.username);
-                
-                Store.commit('setUser', currentUser);
+                localStorage.setItem("ACCESS_TOKEN", response.data.payload);
+                Store.commit('setLoggedIn', true);
                 Router.push('home');
             } catch (e) {
                 throw new Error("Invalid response format");
