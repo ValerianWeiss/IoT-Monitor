@@ -33,7 +33,7 @@ export default class LoginPanel extends Vue {
     private email: string = String.Empty;
     private loginContext: boolean = true;
 
-    private userUrl: string = Config.backendUrl + '/user';
+    private userUrl: string = Config.backendAuthUrl + '/user';
 
 
     private onLogin() : void {
