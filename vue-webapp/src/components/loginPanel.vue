@@ -61,8 +61,7 @@ export default class LoginPanel extends Vue {
     private login(response : AxiosResponse<ResponseMessage>) : void {
         if(response.data.success) {
             try {
-                let currentUser: User = new User(this.username,
-                                            response.data.payload);
+                let currentUser: User = new User(this.username);
                 
                 Store.commit('setUser', currentUser);
                 Router.push('home');

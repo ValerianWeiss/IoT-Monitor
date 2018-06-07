@@ -25,15 +25,6 @@ const Store = new Vuex.Store({
 		getHeading: (state) : string => {
 			return state.heading;
 		},
-
-		isLoggedIn (state) : AxiosPromise<ResponseMessage> {
-			return Axios.get(Config.backendUrl + '/user/token', {
-				params: {
-				    username: state.user.getUsername(),
-				    sessionToken : state.user.getSessionToken(),
-				}
-			});
-		}
 	},
 
 	actions: {
