@@ -7,6 +7,7 @@ import { onHttpConnectionError } from './classes/communication/Error';
 import Store from './store';
 import ResponseMessage from './classes/communication/ResponseMessage';
 import { AxiosResponse } from 'axios';
+import { log } from 'util';
 
 Vue.use(VueRouter);
 
@@ -32,10 +33,21 @@ const Router = new VueRouter({
 });
 
 Router.beforeEach((to, from, next) => {
-	if(Store.getters.isLoggedIn && to.name != 'login') {
-		console.log("push to " + to.path + " heading : " + to.name);
-		Store.commit('setHeading', to.name);
+	let heading: string | undefined;
+
+	if(Store.getters.isLoggedIn) {
+		heading = to.name;
+	} else if(to.name == 'login') {
+		heading = to.name;
+	} else if(Store.getters.isLoggedIn && to.name == 'login') {
+		Router.push('/home')
+		heading = 'home';
+	} else {
+		Router.push('/');
+		heading = 'login';
 	}
+
+	Store.commit('setHeading', heading);
 	next();
 });
 

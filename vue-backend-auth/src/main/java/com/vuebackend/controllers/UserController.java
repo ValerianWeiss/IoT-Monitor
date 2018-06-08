@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.vuebackend.entities.User;
 import com.vuebackend.communication.ErrorCode;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vuebackend.communication.ErrorCause;
 import com.vuebackend.communication.FailureResponseMessage;
 import com.vuebackend.communication.LoginRequest;
@@ -38,7 +39,8 @@ public class UserController {
             throws IllegalArgumentException, UnsupportedEncodingException {
         
         if (authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-            return ResponseEntity.ok(new SuccessResponseMessage(getToken(loginRequest.getUsername())));
+            return ResponseEntity.ok(new SuccessResponseMessage(
+                JWTTokenUtils.create(loginRequest.getUsername())));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -70,8 +72,19 @@ public class UserController {
         return login(new LoginRequest(user.getUsername(), registerRequest.getPassword()));
     }
 
-    private String getToken(String subject) throws IllegalArgumentException, UnsupportedEncodingException {
-        return JWTTokenUtils.create(subject);
+
+    @PutMapping("/refreshToken")
+    public ResponseEntity<?> refreshToken(@RequestBody String token) 
+        throws IllegalArgumentException, UnsupportedEncodingException {
+        
+        DecodedJWT jwt = JWTTokenUtils.verify(token);
+        String username = jwt.getSubject();
+
+        if(userRepository.findByUsername(username).isPresent()) {
+            return ResponseEntity.ok(new SuccessResponseMessage(
+                JWTTokenUtils.create(username)));
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     private boolean authenticate(String username, String password) {
