@@ -14,7 +14,13 @@ const Store = new Vuex.Store({
 	state: {
 		websocket: new WebSocket(),
 		heading: String.Empty,
-		tokenData: {},
+		tokenData: () => {
+			let token = localStorage.getItem(Config.tokenEntity);
+			if(token != null) {
+				return JWT(token);
+			}
+			return {};
+		},
 		token: localStorage.getItem(Config.tokenEntity)
 	},
 
@@ -23,10 +29,16 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
-		isLoggedIn: async (state : any) : Promise<Promise<boolean> | boolean> => {
+		getUsername: (state) : String | null => {
+			let data: any = state.tokenData;
+			let username: any = data["sub"];
+			return username == undefined ? null : username as string;			
+		},
+
+		isLoggedIn: async (state : any) => {
 			
 			if (state.token != null) {
-				let data :any = JWT(state.token);
+				let data : any = JWT(state.token);
 				state.tokenData = data;
 				
 				if(new Date().getMilliseconds() < data["exp"]) {
@@ -44,7 +56,8 @@ const Store = new Vuex.Store({
 	},
 
 	actions: {
- 	},
+
+	},
 
 	mutations: {
 		setHeading(state, heading: string)  : void {
@@ -52,7 +65,5 @@ const Store = new Vuex.Store({
 		},
 	}
 });
-
-
 
 export default Store;
