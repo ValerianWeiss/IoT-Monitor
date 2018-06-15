@@ -98,4 +98,16 @@ public class UserController {
         }
         return false;
     }
+
+    @GetMapping("/isAuthenticated")
+    public ResponseEntity<?> isAuthenticated(@RequestBody String token) {
+        Objects.requireNonNull(token);
+        DecodedJWT jwt;
+        try {
+            jwt = JWTTokenUtils.verify(token);
+        } catch(JWTVerificationException e) {
+            System.out.println("token was invalid");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
 }

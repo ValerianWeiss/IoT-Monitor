@@ -17,4 +17,5 @@ gradle build
 cd $scriptDir
 
 cd "./vue-webapp"
+npm install
 npm run build

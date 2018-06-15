@@ -32,7 +32,6 @@ public class JWTTokenUtils {
 
     // Subject should be the username
     public static String create(String subject) throws IllegalArgumentException, UnsupportedEncodingException {
-
         Algorithm algorithm = Algorithm.HMAC256(secret);
         final long createdAtTime = System.currentTimeMillis();
         final long expirationTime = createdAtTime + periodOfValidity;
@@ -45,7 +44,6 @@ public class JWTTokenUtils {
     }
 
     public static DecodedJWT verify(String token) throws IllegalArgumentException, UnsupportedEncodingException {
-
         Algorithm algorithm = Algorithm.HMAC256(secret);
         JWTVerifier verifier = JWT.require(algorithm).build(); // Reusable verifier instance
         return verifier.verify(token);        
