@@ -8,11 +8,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String tokenHeader;
+
+    @Autowired
+    private RestTemplate rest;
 
     public JwtAuthorizationFilter(String tokenHeader) {
         this.tokenHeader = tokenHeader;
@@ -27,11 +32,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
+
+            if(!this.rest.postForObject("${TokenValidationUrl}", authToken, boolean.class)) {
+                throw new IOException("token was invalid");
+            }
         } else {
-            throw new InvalidParameterException("No token could be found in the header");
+            throw new InvalidParameterException("No token could be found in the header or is invalid");
         }
 
-        JWTTokenUtils.validate(authToken);
         System.out.println("Token was valid");
         chain.doFilter(request, response);
     }

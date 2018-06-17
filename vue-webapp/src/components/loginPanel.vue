@@ -1,5 +1,5 @@
 <template>
-    <div id="loginWrapper">
+    <div id="loginPanel">
         <form id="loginForm" autocomplete="off">
             <input class="formInput" type="text" v-model="username" placeholder="Username"/>
             <input v-if="!loginContext" class="formInput" type="text" v-model="email" placeholder="E-mail"/>
@@ -77,7 +77,7 @@ export default class LoginPanel extends Vue {
 </script>
 
 <style scoped>
-#loginWrapper {
+#loginPanel {
     position: absolute;
     margin: 20vh 50vw;
     transform: translateX(-50%);

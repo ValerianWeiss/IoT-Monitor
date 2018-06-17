@@ -1,13 +1,9 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
+import VueRouter, { Route } from 'vue-router';
 import login from './components/login.vue';
 import home from './components/home.vue';
 import error from './components/error.vue';
-import { onHttpConnectionError } from './classes/communication/Error';
 import Store from './store';
-import ResponseMessage from './classes/communication/ResponseMessage';
-import { AxiosResponse } from 'axios';
-import { log } from 'util';
 
 Vue.use(VueRouter);
 
@@ -17,12 +13,25 @@ const Router = new VueRouter({
 		{   
 			path: '/',
 			name: 'login',
-			component: login,
+			component: login,			
+			beforeEnter: (to: Route, from: Route, next: any) : void => {
+				Store.getters.isTokenValid.then((result: boolean) => {
+					if(result) {
+						Router.push('/home');
+						next();
+						return;
+					}
+				}).catch((err: any) => {
+					Router.push('/error');
+				});
+				next();
+			}
 		},
 		{
 			path: '/home',
 			name: 'home',
 			component: home,
+			beforeEnter: checkAuthentication
 		},
 		{
 			path: '/error',
@@ -33,22 +42,23 @@ const Router = new VueRouter({
 });
 
 Router.beforeEach((to, from, next) => {
-	let heading: string | undefined;
-
-	if(Store.getters.isLoggedIn) {
-		heading = to.name;
-	} else if(to.name == 'login') {
-		heading = to.name;
-	} else if(Store.getters.isLoggedIn && to.name == 'login') {
-		Router.push('/home')
-		heading = 'home';
-	} else {
-		Router.push('/');
-		heading = 'login';
-	}
-
-	Store.commit('setHeading', heading);
+	Store.commit('setHeading', to.name);
 	next();
-});
+})
+
+function checkAuthentication (to: Route, from: Route, next: any) {
+	Store.getters.isTokenValid.then((result: boolean) => {
+		if(!result) {
+			//Router.push('/');
+			next();
+			return;
+		}
+	}).catch((err: any) => {
+		Router.push('/error');
+		return;
+	});
+	next();	
+}
+
 
 export default Router;

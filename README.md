@@ -46,6 +46,9 @@ npm run dev
 ```
 This will start a development server on *localhost:8080*. The server will update your webapp when you save any file which belongs to it.
 
+> ##### Note:
+> In the root folder of the project you can find a `runAll.sh` and a `buildAll.sh`. With these files you can build and run the entiere project locally, which makes it easier to test the modules.
+
 To run everything in docker containers on your local machine you have to build the Vue- and the Spring-app and then navigate to the <$ProjectDirectory> and run:
 ```bash
 docker-compose up

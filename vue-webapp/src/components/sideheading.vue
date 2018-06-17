@@ -1,7 +1,7 @@
 <template>
-	<div id="root">
+	<div id="sideheading">
 		<div id="sideHadingContainer">
-			<h1 id="sideHeading">{{heading}}</h1>        
+			<h1 id="text">{{heading}}</h1>        
 		</div>
 	</div>
 </template>
@@ -27,7 +27,7 @@ export default class Sideheading extends Vue {
 
 <style scoped>
 
-#root{
+#sideheading{
 	position: relative;
     float: left;
 }
@@ -39,7 +39,7 @@ export default class Sideheading extends Vue {
     padding: 300px 60px 20px 20px;
 }
 
-#sideHeading {
+#text {
 	font-family: 'Archivo Black', sans-serif;
 	font-size: 600%;
 	text-align: right;

@@ -72,19 +72,14 @@ public class UserController {
         return login(new LoginRequest(user.getUsername(), registerRequest.getPassword()));
     }
 
-
-    @PutMapping("/refreshToken")
-    public ResponseEntity<?> refreshToken(@RequestBody String token) 
+    @PutMapping("/isTokenValid")
+    public boolean isTokenValid(@RequestBody String token) 
         throws IllegalArgumentException, UnsupportedEncodingException {
         
         DecodedJWT jwt = JWTTokenUtils.verify(token);
         String username = jwt.getSubject();
 
-        if(userRepository.findByUsername(username).isPresent()) {
-            return ResponseEntity.ok(new SuccessResponseMessage(
-                JWTTokenUtils.create(username)));
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return userRepository.findByUsername(username).isPresent();
     }
 
     private boolean authenticate(String username, String password) {
