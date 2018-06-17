@@ -23,14 +23,16 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
-		isLoggedIn: async (state : any) : Promise<Promise<boolean> | boolean> => {
-			
+		isTokenValid: async (state : any) : Promise<boolean> => {
 			if (state.token != null) {
 				let data :any = JWT(state.token);
 				state.tokenData = data;
 				
 				if(new Date().getMilliseconds() < data["exp"]) {
-					let response = await Axios.put(Config.backendAuthUrl + 'user/refreshToken/', {token : state.token})
+					let response = await Axios.put(Config.backendAuthUrl + 'user/refreshToken/',
+						{
+							"token" : state.token
+						})
 					
 					if(response.data.success) {
 						localStorage.setItem(Config.tokenEntity, response.data.payload);
@@ -47,12 +49,15 @@ const Store = new Vuex.Store({
  	},
 
 	mutations: {
-		setHeading(state, heading: string)  : void {
+		setHeading(state, heading: string) : void {
 			state.heading = heading;
+		},
+
+		deleteToken(state) : void {
+			localStorage.removeItem(Config.tokenEntity);
 		},
 	}
 });
-
 
 
 export default Store;

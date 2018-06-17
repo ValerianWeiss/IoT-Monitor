@@ -1,5 +1,5 @@
 <template>
-    <div id="loginWrapper">
+    <div id="loginPanelr">
         <form id="loginForm" autocomplete="off">
             <input class="formInput" type="text" v-model="username" placeholder="Username"/>
             <input v-if="!loginContext" class="formInput" type="text" v-model="email" placeholder="E-mail"/>

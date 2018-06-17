@@ -31,7 +31,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             throw new InvalidParameterException("No token could be found in the header");
         }
 
-        JWTTokenUtils.validate(authToken);
+        // Send token to auth service and check response
+        // if token is invalid -> throw exceptoion
+
         System.out.println("Token was valid");
         chain.doFilter(request, response);
     }
