@@ -61,8 +61,7 @@ export default class LoginPanel extends Vue {
         if(response.data.success) {
             try {
                 localStorage.setItem("ACCESS_TOKEN", response.data.payload);
-                Store.commit('setLoggedIn', true);
-                Router.push('home');
+                Router.push('/home');
             } catch (e) {
                 throw new Error("Invalid response format");
             }
