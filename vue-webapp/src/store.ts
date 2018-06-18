@@ -4,7 +4,6 @@ import WebSocket from './classes/WebSocket';
 import { String } from 'typescript-string-operations';
 import Axios,{ AxiosPromise, AxiosResponse } from 'axios';
 import Config from './appConfig.json';
-import ResponseMessage from './classes/communication/ResponseMessage';
 import * as JWT from 'jwt-decode';
 
 Vue.use(Vuex);
@@ -14,14 +13,6 @@ const Store = new Vuex.Store({
 	state: {
 		websocket: new WebSocket(),
 		heading: String.Empty,
-		tokenData: () => {
-			let token = localStorage.getItem(Config.tokenEntity);
-			if(token != null) {
-				return JWT(token);
-			}
-			return {};
-		},
-		token: localStorage.getItem(Config.tokenEntity)
 	},
 
 	getters: {
@@ -29,22 +20,19 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
-		getUsername: (state) : String | null => {
-			let data: any = state.tokenData;
-			let username: any = data["sub"];
-			return username == undefined ? null : username as string;			
+		getUsername: (state) : String | null => {	
+			let token = localStorage.getItem(Config.tokenEntity);
+			if(token != null) {
+				let data: any = JWT(token);
+				return data["sub"] as string;
+			}
+			return null;			
 		},
 
 		isTokenValid: async (state: any) : Promise<boolean> => {
-			if (state.token != null) {
-				let data : any = JWT(state.token);
-				state.tokenData = data;
-				
-				let response = await Axios.put(Config.backendAuthUrl + '/user/isTokenValid/',
-					{
-						token : state.token
-					});
-				
+			let token = localStorage.getItem(Config.tokenEntity);
+			if (token != null) {
+				let response = await Axios.put(Config.backendAuthUrl + '/user/isTokenValid/', {token});
 				return response.data.success;
 			}
 			localStorage.removeItem(Config.tokenEntity);

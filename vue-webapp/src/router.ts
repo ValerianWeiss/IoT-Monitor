@@ -18,13 +18,11 @@ const Router = new VueRouter({
 				Store.getters.isTokenValid.then((result: boolean) => {
 					if(result) {
 						Router.push('/home');
-						next();
-						return;
 					}
+					next();
 				}).catch((err: any) => {
 					Router.push('/error');
 				});
-				next();
 			}
 		},
 		{
@@ -50,15 +48,12 @@ function checkAuthentication (to: Route, from: Route, next: any) {
 	Store.getters.isTokenValid.then((result: boolean) => {
 		if(!result) {
 			Router.push('/');
-			next();
-			return;
 		}
+		next();
 	}).catch((err: any) => {
 		Router.push('/error');
 		next();	
-		return;
 	});
-	next();
 }
 
 
