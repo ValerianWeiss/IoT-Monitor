@@ -49,15 +49,16 @@ Router.beforeEach((to, from, next) => {
 function checkAuthentication (to: Route, from: Route, next: any) {
 	Store.getters.isTokenValid.then((result: boolean) => {
 		if(!result) {
-			//Router.push('/');
+			Router.push('/');
 			next();
 			return;
 		}
 	}).catch((err: any) => {
 		Router.push('/error');
+		next();	
 		return;
 	});
-	next();	
+	next();
 }
 
 

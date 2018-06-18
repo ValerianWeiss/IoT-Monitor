@@ -9,9 +9,11 @@ import com.vuebackend.communication.ErrorCode;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vuebackend.communication.ErrorCause;
 import com.vuebackend.communication.FailureResponseMessage;
+import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
 import com.vuebackend.communication.SuccessResponseMessage;
+import com.vuebackend.communication.TokenRequest;
 import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.security.JWTTokenUtils;
 
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/user")
@@ -73,13 +76,14 @@ public class UserController {
     }
 
     @PutMapping("/isTokenValid")
-    public boolean isTokenValid(@RequestBody String token) 
+    public @ResponseBody ResponseMessage isTokenValid(@RequestBody TokenRequest tokenRequest) 
         throws IllegalArgumentException, UnsupportedEncodingException {
-        
-        DecodedJWT jwt = JWTTokenUtils.verify(token);
+        DecodedJWT jwt = JWTTokenUtils.verify(tokenRequest.getToken());
         String username = jwt.getSubject();
 
-        return userRepository.findByUsername(username).isPresent();
+        return userRepository.findByUsername(username).isPresent() ? 
+                                    new SuccessResponseMessage() : 
+                                    new FailureResponseMessage(new ErrorCause(ErrorCode.notLoggedIn));
     }
 
     private boolean authenticate(String username, String password) {

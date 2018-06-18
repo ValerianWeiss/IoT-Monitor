@@ -18,9 +18,7 @@ import Axios,{ AxiosResponse } from 'axios';
 import LoginRequest from '../classes/communication/LoginRequest';
 import RegisterRequest from '../classes/communication/RegisterRequest';
 import ResponseMessage from '../classes/communication/ResponseMessage';
-import Router from '../router';
 import Config from '../appConfig.json';
-import Store from '../store';
 import { String } from 'typescript-string-operations';
 
 @Component
@@ -61,7 +59,7 @@ export default class LoginPanel extends Vue {
         if(response.data.success) {
             try {
                 localStorage.setItem("ACCESS_TOKEN", response.data.payload);
-                Router.push('/home');
+                this.$router.push('/home');
             } catch (e) {
                 throw new Error("Invalid response format");
             }

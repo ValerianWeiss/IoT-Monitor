@@ -11,15 +11,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { log } from 'util';
-import Router from '../router';
 
 @Component
 export default class Navigationbar extends Vue {
 
     private logout() {
         this.$store.commit('deleteToken');
-        Router.push('/');
+        this.$router.push('/');
     }
 }
 </script>

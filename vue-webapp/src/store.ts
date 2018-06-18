@@ -40,17 +40,14 @@ const Store = new Vuex.Store({
 				let data : any = JWT(state.token);
 				state.tokenData = data;
 				
-				let response = await Axios.put(Config.backendAuthUrl + 'user/isTokenValid/',
+				let response = await Axios.put(Config.backendAuthUrl + '/user/isTokenValid/',
 					{
-						"token" : state.token
-					})
+						token : state.token
+					});
 				
-				if(response.data.success) {
-					localStorage.setItem(Config.tokenEntity, response.data.payload);
-					return true;
-				}
-				localStorage.removeItem(Config.tokenEntity);
+				return response.data.success;
 			}
+			localStorage.removeItem(Config.tokenEntity);
 			return false;
 		}
 	},
