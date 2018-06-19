@@ -8,31 +8,27 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.TokenRequest;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String tokenHeader;
+    private String tokenValidationUrl;
+    private RestTemplate restTemplate;
 
-    @Autowired
-    private RestTemplate rest;
-
-    public JwtAuthorizationFilter(String tokenHeader) {
+    public JwtAuthorizationFilter(String tokenHeader, String tokenValidationUrl) {
         this.tokenHeader = tokenHeader;
+        this.tokenValidationUrl = tokenValidationUrl;
+        this.restTemplate = new RestTemplate();
+        System.out.println("construced");
     }
 
-    @Bean
-    private RestTemplate setRestTemplate() {
-        ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
-        return new RestTemplate(requestFactory);
-    }
-    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -42,32 +38,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
-        
 
             HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
-            if(this.rest == null) {
-                System.out.println("rest was null");
-            }
 
-            if("${TokenValidationUrl}" == null) {
-                System.out.println("rest was null");
-            }
+            boolean tokenIsValid = 
+                this.restTemplate.postForObject(this.tokenValidationUrl, tokenRequest, Boolean.class);
 
-            if(tokenRequest == null) {
-                System.out.println("request was null");
-            }
-
-            if(ResponseMessage.class == null) {
-                System.out.println("class was null");
-            }
-
-            ResponseMessage responseMessage = this.rest.postForObject("${TokenValidationUrl}", tokenRequest, ResponseMessage.class);
-
-            if(responseMessage == null){
-                System.out.println("was nul");
-            }
-            if(responseMessage.getSuccess()) {
-                throw new IOException("token was invalid");
+            if (!tokenIsValid) {
+                throw new IOException("Token was invalid!");
             }
         } else {
             throw new InvalidParameterException("No token could be found in the header or is invalid");

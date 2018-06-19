@@ -18,6 +18,7 @@ import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.security.JWTTokenUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,10 +41,9 @@ public class UserController {
     @PutMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
-        
+
         if (authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-            return ResponseEntity.ok(new SuccessResponseMessage(
-                JWTTokenUtils.create(loginRequest.getUsername())));
+            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(loginRequest.getUsername())));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -75,15 +75,13 @@ public class UserController {
         return login(new LoginRequest(user.getUsername(), registerRequest.getPassword()));
     }
 
-    @PutMapping("/isTokenValid")
-    public @ResponseBody ResponseMessage isTokenValid(@RequestBody TokenRequest tokenRequest) 
-        throws IllegalArgumentException, UnsupportedEncodingException {
+    @PostMapping("/isTokenValid")
+    public ResponseEntity<Boolean> isTokenValid(@RequestBody TokenRequest tokenRequest)
+            throws IllegalArgumentException, UnsupportedEncodingException {
         DecodedJWT jwt = JWTTokenUtils.verify(tokenRequest.getToken());
         String username = jwt.getSubject();
 
-        return userRepository.findByUsername(username).isPresent() ? 
-                                    new SuccessResponseMessage() : 
-                                    new FailureResponseMessage(new ErrorCause(ErrorCode.notLoggedIn));
+        return ResponseEntity.ok(userRepository.findByUsername(username).isPresent());
     }
 
     private boolean authenticate(String username, String password) {
