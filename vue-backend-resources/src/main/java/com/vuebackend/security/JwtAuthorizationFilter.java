@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.http.HttpEntity;
+
+import com.vuebackend.communication.ResponseMessage;
+import com.vuebackend.communication.TokenRequest;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
@@ -23,6 +27,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.tokenHeader = tokenHeader;
     }
 
+    @Bean
+    private RestTemplate setRestTemplate() {
+        ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
+        return new RestTemplate(requestFactory);
+    }
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -32,8 +42,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
+        
 
-            if(!this.rest.postForObject("${TokenValidationUrl}", authToken, boolean.class)) {
+            HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
+            if(this.rest == null) {
+                System.out.println("rest was null");
+            }
+
+            if("${TokenValidationUrl}" == null) {
+                System.out.println("rest was null");
+            }
+
+            if(tokenRequest == null) {
+                System.out.println("request was null");
+            }
+
+            if(ResponseMessage.class == null) {
+                System.out.println("class was null");
+            }
+
+            ResponseMessage responseMessage = this.rest.postForObject("${TokenValidationUrl}", tokenRequest, ResponseMessage.class);
+
+            if(responseMessage == null){
+                System.out.println("was nul");
+            }
+            if(responseMessage.getSuccess()) {
                 throw new IOException("token was invalid");
             }
         } else {
