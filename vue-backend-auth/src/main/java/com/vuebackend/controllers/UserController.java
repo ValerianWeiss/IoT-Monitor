@@ -6,15 +6,19 @@ import java.util.Optional;
 
 import com.vuebackend.entities.User;
 import com.vuebackend.communication.ErrorCode;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vuebackend.communication.ErrorCause;
 import com.vuebackend.communication.FailureResponseMessage;
+import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
 import com.vuebackend.communication.SuccessResponseMessage;
+import com.vuebackend.communication.TokenRequest;
 import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.security.JWTTokenUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/user")
@@ -36,9 +41,9 @@ public class UserController {
     @PutMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
-        
+
         if (authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
-            return ResponseEntity.ok(new SuccessResponseMessage(getToken(loginRequest.getUsername())));
+            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(loginRequest.getUsername())));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -70,8 +75,13 @@ public class UserController {
         return login(new LoginRequest(user.getUsername(), registerRequest.getPassword()));
     }
 
-    private String getToken(String subject) throws IllegalArgumentException, UnsupportedEncodingException {
-        return JWTTokenUtils.create(subject);
+    @PostMapping("/isTokenValid")
+    public ResponseEntity<Boolean> isTokenValid(@RequestBody TokenRequest tokenRequest)
+            throws IllegalArgumentException, UnsupportedEncodingException {
+        DecodedJWT jwt = JWTTokenUtils.verify(tokenRequest.getToken());
+        String username = jwt.getSubject();
+
+        return ResponseEntity.ok(userRepository.findByUsername(username).isPresent());
     }
 
     private boolean authenticate(String username, String password) {

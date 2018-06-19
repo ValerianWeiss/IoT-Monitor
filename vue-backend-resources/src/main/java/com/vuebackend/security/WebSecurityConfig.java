@@ -30,6 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${tokenHeader}")
     private String tokenHeader;
 
+    @Value("${TokenValidationUrl}")
+    private String tokenValidationUrl;
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and()
@@ -47,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Custom JWT based security filter
-        JwtAuthorizationFilter authenticationFilter = new JwtAuthorizationFilter(tokenHeader);
+        JwtAuthorizationFilter authenticationFilter = new JwtAuthorizationFilter(tokenHeader, tokenValidationUrl);
         httpSecurity.addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

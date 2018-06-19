@@ -8,14 +8,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.vuebackend.communication.TokenRequest;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String tokenHeader;
+    private String tokenValidationUrl;
+    private RestTemplate restTemplate;
 
-    public JwtAuthorizationFilter(String tokenHeader) {
+    public JwtAuthorizationFilter(String tokenHeader, String tokenValidationUrl) {
         this.tokenHeader = tokenHeader;
+        this.tokenValidationUrl = tokenValidationUrl;
+        this.restTemplate = new RestTemplate();
+        System.out.println("construced");
     }
 
     @Override
@@ -27,11 +38,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
+
+            HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
+
+            boolean tokenIsValid = 
+                this.restTemplate.postForObject(this.tokenValidationUrl, tokenRequest, Boolean.class);
+
+            if (!tokenIsValid) {
+                throw new IOException("Token was invalid!");
+            }
         } else {
-            throw new InvalidParameterException("No token could be found in the header");
+            throw new InvalidParameterException("No token could be found in the header or is invalid");
         }
 
-        JWTTokenUtils.validate(authToken);
         System.out.println("Token was valid");
         chain.doFilter(request, response);
     }

@@ -1,10 +1,10 @@
-body{
+body {
     position: absolute;
     margin: 0;
     padding: 0;
 }
 
-.btn{
+.btn {
     border: 0;
     border-radius: 2px;
     font-size: 14px;
@@ -12,4 +12,8 @@ body{
     font-weight: 600;
     outline: 0;
     letter-spacing: 1px;
+}
+
+p {
+    font-family: 'Archivo Black', sans-serif;
 }

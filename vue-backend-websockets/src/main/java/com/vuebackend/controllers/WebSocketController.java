@@ -17,7 +17,7 @@ public class WebSocketController {
     public void send(String topic, Object payload) {
         System.out.println("publish hello message");
         for(String simpleBrokerBasePath : simpleBrokerBasePaths) {
-            template.convertAndSend(simpleBrokerBasePath + topic, payload);
+            template.convertAndSend(simpleBrokerBasePath + '/' + topic, payload);
         }
     }
 }

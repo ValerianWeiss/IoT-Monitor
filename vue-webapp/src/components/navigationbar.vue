@@ -1,14 +1,9 @@
 <template>
-    <div>
-        <nav class="mainNavigation">
-            <div class="navigationWrapper">
-                <ul>
-                    <li><a>About me</a></li>
-                    <li><a>Showcase</a></li>
-                    <li><a>Contact</a></li>
-                    <li><a>Blog</a></li>
-                </ul>
-            </div>
+    <div id="navigationbar">
+        <nav id="wrapper">
+            <button class="btn" id="logoutBtn" @click="logout">
+                <p class="headings">Logout</p>
+            </button>
         </nav>
     </div>
 </template>
@@ -17,32 +12,37 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
+@Component
 export default class Navigationbar extends Vue {
 
+    private logout() {
+        this.$store.commit('deleteToken');
+        this.$router.push('/');
+    }
 }
 </script>
 
 <style scoped>
 
-.mainNavigation {
-    width: auto;
+#wrapper {
+    width: 100vw;
+    height: 60px;
+    background-color: rgb(129, 165, 231);
+}
+
+#logoutBtn {
+    position: relative;
+    float: right;
+    margin: 5px 10px 5px 5px;
     height: 50px;
-    background-color: black;
+    border-radius: 20px;
+    width: 10%;
+    background-color:azure;
 }
 
-.mainNavigation ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.mainNavigation ul li {
-    float: left;
-}
-
-.navigationWrapper {
-    margin: auto;
-    width: 70%;
+.headings {
+    text-align: center;
+    letter-spacing: 0px;
 }
 
 </style>

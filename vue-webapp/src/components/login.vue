@@ -1,5 +1,5 @@
 <template>
-	<div id="root">
+	<div id="login">
 		<loginPanel></loginPanel>
 		<div id="wrapper">
 			<div id="trapezoid"></div>

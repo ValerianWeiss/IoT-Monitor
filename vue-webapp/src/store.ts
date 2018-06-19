@@ -2,9 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import WebSocket from './classes/WebSocket';
 import { String } from 'typescript-string-operations';
-import Axios,{ AxiosPromise } from 'axios';
+import Axios,{ AxiosPromise, AxiosResponse } from 'axios';
 import Config from './appConfig.json';
-import ResponseMessage from './classes/communication/ResponseMessage';
+import * as JWT from 'jwt-decode';
 
 Vue.use(Vuex);
 
@@ -13,8 +13,6 @@ const Store = new Vuex.Store({
 	state: {
 		websocket: new WebSocket(),
 		heading: String.Empty,
-		loggedIn: false,
-		token: localStorage.getItem("ACCESS_TOKEN")
 	},
 
 	getters: {
@@ -22,23 +20,38 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
-		isLoggedIn: (state) : boolean => {
-			return state.loggedIn;
+		getUsername: (state) : String | null => {	
+			let token = localStorage.getItem(Config.tokenEntity);
+			if(token != null) {
+				let data: any = JWT(token);
+				return data["sub"] as string;
+			}
+			return null;			
+		},
+
+		isTokenValid: async (state: any) : Promise<boolean> => {
+			let token = localStorage.getItem(Config.tokenEntity);
+			if (token != null) {
+				let response = await Axios.put(Config.backendAuthUrl + '/user/isTokenValid/', {token});
+				return response.data.success;
+			}
+			localStorage.removeItem(Config.tokenEntity);
+			return false;
 		}
 	},
 
 	actions: {
-		
- 	},
+
+	},
 
 	mutations: {
-		setHeading(state, heading: string)  : void {
+		setHeading(state, heading: string) : void {
 			state.heading = heading;
 		},
 
-		setLoggedIn(state, value: boolean) : void {
-			state.loggedIn = value;
-		}
+		deleteToken(state) : void {
+			localStorage.removeItem(Config.tokenEntity);
+		},
 	}
 });
 
