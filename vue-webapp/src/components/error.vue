@@ -1,12 +1,12 @@
 <template>
-	<div id="root">
+	<div id="error">
 		
 	</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component } from 'vue-property-decorator';
 
 @Component({
 	components: {
