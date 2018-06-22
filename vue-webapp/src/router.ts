@@ -29,7 +29,7 @@ const Router = new VueRouter({
 			path: '/home',
 			name: 'home',
 			component: home,
-			beforeEnter: checkAuthentication
+			//beforeEnter: checkAuthentication
 		},
 		{
 			path: '/error',
