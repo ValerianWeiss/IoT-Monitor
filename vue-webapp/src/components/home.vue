@@ -58,6 +58,7 @@ export default class Home extends Vue {
         graphView.setHeading('Hello World ' + this.graphViews.length);
         if(topic != undefined) {
             graphView.addDataEndpoint(topic);
+            graphView.setName(topic);
         } else {
             this.$router.push('/error');
         }

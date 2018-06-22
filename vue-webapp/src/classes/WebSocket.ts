@@ -10,7 +10,7 @@ export default class WebSocket {
     public constructor() {
         let client = Stomp.over(new SockJS(Config.websocketUrl));
         client.connect({}, (frame?: Frame) : void => {
-            client.subscribe(Config.websocketTopicRoot + '/hello', function(message: Message) : void {
+            client.subscribe(Config.websocketTopicRoot + '/hello', (message: Message) : void => {
                 console.log("got message" + message);
             });
         }, 
@@ -22,9 +22,7 @@ export default class WebSocket {
     }
     
     public subscribe(topic: string, callback: any) : void {
-        this.client.subscribe(topic, callback);
-        console.log("subsribed to topic" + topic);
-        
+        this.client.subscribe(Config.websocketTopicRoot + '/' + topic, callback);
     }
 
     public send(object: any, path: string) : void {
