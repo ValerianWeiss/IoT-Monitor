@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component } from 'vue-property-decorator';
 
 @Component
 export default class Navigationbar extends Vue {
@@ -25,19 +25,20 @@ export default class Navigationbar extends Vue {
 <style scoped>
 
 #wrapper {
+    position: relative;
     width: 100vw;
     height: 60px;
-    background-color: rgb(129, 165, 231);
+    background-color: #5F4D89;
 }
 
 #logoutBtn {
     position: relative;
     float: right;
-    margin: 5px 10px 5px 5px;
+    margin: 5px 10px 10px 5px;
     height: 50px;
-    border-radius: 20px;
+    border-radius: 5px;
     width: 10%;
-    background-color:azure;
+    background-color: #72D9B4;
 }
 
 .headings {

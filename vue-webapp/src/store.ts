@@ -41,7 +41,7 @@ const Store = new Vuex.Store({
 	},
 
 	actions: {
-
+		
 	},
 
 	mutations: {
@@ -52,6 +52,10 @@ const Store = new Vuex.Store({
 		deleteToken(state) : void {
 			localStorage.removeItem(Config.tokenEntity);
 		},
+
+		subscribe(state, subInfo: any) : void{
+			state.websocket.subscribe(subInfo.topic, subInfo.callback)
+		}
 	}
 });
 

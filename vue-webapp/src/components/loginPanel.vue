@@ -5,15 +5,15 @@
             <input v-if="!loginContext" class="formInput" type="text" v-model="email" placeholder="E-mail"/>
             <input class="formInput" type="password" v-model="password" placeholder="Password"/>
             <input v-if="!loginContext" class="formInput" type="password" v-model="passwordRepeated" placeholder="Repeat password"/>
-            <button v-if="loginContext" id="loginBtn" class="btn" type="button" @click="onLogin">Login</button>
-            <button id="registerBtn" class="btn" type="button" @click="onRegister">Register</button>
+            <button v-if="loginContext" class="btn" type="button" @click="onLogin">Login</button>
+            <button class="btn" type="button" @click="onRegister">Register</button>
         </form>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component } from 'vue-property-decorator';
 import Axios,{ AxiosResponse } from 'axios';
 import LoginRequest from '../classes/communication/LoginRequest';
 import RegisterRequest from '../classes/communication/RegisterRequest';
@@ -58,7 +58,7 @@ export default class LoginPanel extends Vue {
     private login(response : AxiosResponse<ResponseMessage>) : void {
         if(response.data.success) {
             try {
-                localStorage.setItem("ACCESS_TOKEN", response.data.payload);
+                localStorage.setItem(Config.tokenEntity, response.data.payload);
                 this.$router.push('/home');
             } catch (e) {
                 throw new Error("Invalid response format");
@@ -105,7 +105,8 @@ export default class LoginPanel extends Vue {
 .btn {
     margin: 10px 0 0 0;
     width: 100%;
-    height: 22px;        
+    height: 22px;  
+    font-weight: 600;     
 }
 </style>
 
