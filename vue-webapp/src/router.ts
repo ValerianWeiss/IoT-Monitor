@@ -21,7 +21,7 @@ const Router = new VueRouter({
 					}
 					next();
 				}).catch((err: any) => {
-					Router.push('/error');
+					Router.push('/error');					
 				});
 			}
 		},

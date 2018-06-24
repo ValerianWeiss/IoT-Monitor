@@ -32,7 +32,7 @@ const Store = new Vuex.Store({
 		isTokenValid: async (state: any) : Promise<boolean> => {
 			let token = localStorage.getItem(Config.tokenEntity);
 			if (token != null) {
-				let response = await Axios.put(Config.backendAuthUrl + '/user/isTokenValid/', {token});
+				let response = await Axios.post(Config.backendAuthUrl + '/user/isTokenValid/', {token});
 				return response.data.success;
 			}
 			localStorage.removeItem(Config.tokenEntity);

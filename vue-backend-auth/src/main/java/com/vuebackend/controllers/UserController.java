@@ -78,10 +78,14 @@ public class UserController {
     @PostMapping("/isTokenValid")
     public ResponseEntity<Boolean> isTokenValid(@RequestBody TokenRequest tokenRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
-        DecodedJWT jwt = JWTTokenUtils.verify(tokenRequest.getToken());
-        String username = jwt.getSubject();
-
-        return ResponseEntity.ok(userRepository.findByUsername(username).isPresent());
+       
+        try {
+            DecodedJWT jwt = JWTTokenUtils.verify(tokenRequest.getToken());
+            String username = jwt.getSubject();
+            return ResponseEntity.ok(userRepository.findByUsername(username).isPresent());
+        } catch(Exception e) {
+            return ResponseEntity.ok(false);
+        }
     }
 
     private boolean authenticate(String username, String password) {
