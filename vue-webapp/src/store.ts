@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import WebSocket from './classes/WebSocket';
 import { String } from 'typescript-string-operations';
-import Axios,{ AxiosPromise, AxiosResponse } from 'axios';
+import Axios from 'axios';
 import Config from './appConfig.json';
 import * as JWT from 'jwt-decode';
 
@@ -33,7 +33,8 @@ const Store = new Vuex.Store({
 			let token = localStorage.getItem(Config.tokenEntity);
 			if (token != null) {
 				let response = await Axios.post(Config.backendAuthUrl + '/user/isTokenValid/', {token});
-				return response.data.success;
+				console.log("returning" + response.data);
+				return response.data;
 			}
 			localStorage.removeItem(Config.tokenEntity);
 			return false;
