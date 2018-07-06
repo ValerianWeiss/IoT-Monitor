@@ -23,11 +23,11 @@ npm run build
 ```
 This will build the entire web content with webpack. The bundled js files will be placed under <$ProjectDir>/vue-webapp/dist/
 
-To build the Spring Boot microservice, navigate into the vue-backend directory. If you run now:
+To build a Spring Boot microservice, navigate into a vue-backend-... directory. If you run now:
 ```bash
 gradle build
 ```
-The Spring Boot app will be build and all tests are getting executed. The .jar file will be in the <$ProjectDir>/vue-backend/build/libs/ folder.
+The Spring Boot mircoservice will be build and all tests are getting executed. The .jar file will be in the <$ProjectDir>/vue-backend-.../build/libs/ folder.
 
 > ##### Note:
 > The database must already be running that the application passes all tests. You can just build the application without running any tests with:
@@ -35,19 +35,12 @@ The Spring Boot app will be build and all tests are getting executed. The .jar f
 > gradle build -x test
 > ```
 
-To run the application locally now, you have to start the MySql database, the Spring Boot app and the Vue app.
-To start the Spring Boot app, navigate to the vue-backend folder and run:
-```bash
-java -jar /build/libs/vue-backend-0.0.1.jar
-```
-To run the Vue application, navigate into the vue-webapp folder and run:
-```bash
-npm run dev
-```
-This will start a development server on *localhost:8080*. The server will update your webapp when you save any file which belongs to it.
+To run the application locally now, you have to start the MySql database, and start the Spring Boot microservices and the Vue app.
+You can start them by hand or just execute the script `runAll.sh` from the project directory to run the entire application.
+This will start the vue-webapp development server on *localhost:8080* and all microservices.
 
 > ##### Note:
-> In the root folder of the project you can find a `runAll.sh` and a `buildAll.sh`. With these files you can build and run the entiere project locally, which makes it easier to test the modules.
+> In the root folder of the project you can find a `buildAll.sh`. With this script you can build the entiere project
 
 To run everything in docker containers on your local machine you have to build the Vue- and the Spring-app and then navigate to the <$ProjectDirectory> and run:
 ```bash
