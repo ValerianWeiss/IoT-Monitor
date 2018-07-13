@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import com.vuebackend.communication.TokenRequest;
 
@@ -26,7 +24,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.tokenHeader = tokenHeader;
         this.tokenValidationUrl = tokenValidationUrl;
         this.restTemplate = new RestTemplate();
-        System.out.println("construced");
     }
 
     @Override

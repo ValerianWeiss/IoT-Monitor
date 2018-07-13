@@ -4,6 +4,9 @@ public class FailureResponseMessage extends ResponseMessage {
     
     private ErrorCause error;
 
+	
+	public FailureResponseMessage(){}
+	
     public FailureResponseMessage(ErrorCause error) {
         super(false);
         this.error = error;

@@ -6,13 +6,15 @@ public class RegisterRequest {
 	private String password;
 	private String passwordRepeated;
 
+	
+	public RegisterRequest() {}
+
 	public RegisterRequest(String username, String password, 
-						   String passwordRepeated) {
+							String passwordRepeated) {
         this.username = username;
 		this.password = password;
 		this.passwordRepeated = passwordRepeated;
     }
-
 
     public String getPassword() {
 		return password;

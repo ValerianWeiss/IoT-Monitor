@@ -4,10 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@ComponentScan(basePackages = "com.vuebackend.controllers, com.vuebackend.communication, com.vuebackend.security")
-@EnableJpaRepositories("com.vuebackend.dbrepositories")
+@ComponentScan(basePackages = "com.vuebackend.controllers, com.vuebackend.communication, com.vuebackend.jwt")
 @EntityScan("com.vuebackend.entities")
 @SpringBootApplication
 public class VueBackendAuthApplication {

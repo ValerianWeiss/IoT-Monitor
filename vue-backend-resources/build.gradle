@@ -32,9 +32,10 @@ targetCompatibility = 1.8
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-websocket')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('com.auth0:java-jwt:3.3.0')
 	runtime('mysql:mysql-connector-java')
+	compile project(':vue-backend-communication')
+	
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

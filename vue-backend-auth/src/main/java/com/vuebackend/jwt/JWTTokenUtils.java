@@ -1,4 +1,4 @@
-package com.vuebackend.security;
+package com.vuebackend.jwt;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;

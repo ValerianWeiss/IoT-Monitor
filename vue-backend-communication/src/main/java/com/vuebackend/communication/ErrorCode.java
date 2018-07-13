@@ -6,7 +6,8 @@ public enum ErrorCode {
     emailAlreadyTaken(103),
     passwordIncorrect(104),
     passwordsNotEqual(105),
-    notLoggedIn(201);
+    notLoggedIn(201),
+	unknownError(-1);
 
     private int numVal;
 

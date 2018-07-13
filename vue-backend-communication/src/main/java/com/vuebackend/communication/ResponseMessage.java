@@ -5,6 +5,8 @@ public abstract class ResponseMessage {
     private boolean success;
 
     
+	public ResponseMessage(){}
+	
     public ResponseMessage(boolean requestWasSuccessful) {
         this.success = requestWasSuccessful;
     }

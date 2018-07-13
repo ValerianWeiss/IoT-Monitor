@@ -4,6 +4,7 @@ public class SuccessResponseMessage extends ResponseMessage {
     
     private Object payload;
 
+	
     public SuccessResponseMessage() {
         super(true);
     }
