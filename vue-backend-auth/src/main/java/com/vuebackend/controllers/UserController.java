@@ -9,7 +9,6 @@ import com.vuebackend.communication.ErrorCode;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vuebackend.communication.ErrorCause;
 import com.vuebackend.communication.FailureResponseMessage;
-import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
 import com.vuebackend.communication.SuccessResponseMessage;
@@ -18,7 +17,6 @@ import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.security.JWTTokenUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/user")
@@ -58,18 +55,13 @@ public class UserController {
                     .body(new FailureResponseMessage(new ErrorCause(ErrorCode.usernameAlreadyTaken)));
         }
 
-        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest()
-                    .body(new FailureResponseMessage(new ErrorCause(ErrorCode.emailAlreadyTaken)));
-        }
-
         if (registerRequest.passwordsNotEqual()) {
             return ResponseEntity.badRequest()
                     .body(new FailureResponseMessage(new ErrorCause(ErrorCode.passwordsNotEqual)));
         }
 
         User user = new User(registerRequest.getUsername(),
-                new BCryptPasswordEncoder().encode(registerRequest.getPassword()), registerRequest.getEmail());
+                new BCryptPasswordEncoder().encode(registerRequest.getPassword()));
 
         userRepository.save(user);
         return login(new LoginRequest(user.getUsername(), registerRequest.getPassword()));

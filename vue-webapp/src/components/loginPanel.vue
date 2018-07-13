@@ -2,11 +2,14 @@
     <div id="loginPanel">
         <form id="loginForm" autocomplete="off">
             <input class="formInput" type="text" v-model="username" placeholder="Username"/>
-            <input v-if="!loginContext" class="formInput" type="text" v-model="email" placeholder="E-mail"/>
-            <input class="formInput" type="password" v-model="password" placeholder="Password"/>
-            <input v-if="!loginContext" class="formInput" type="password" v-model="passwordRepeated" placeholder="Repeat password"/>
+            <input class="formInput passInput" type="password" v-model="password" placeholder="Password"/>
+            <p class="hintText">{{hintMessage}}</p>
+            <input v-if="!loginContext" class="formInput passInput" type="password" v-model="passwordRepeated" placeholder="Repeat password"/>
+            <p v-if="!loginContext" class="hintText">{{hintMessage}}</p>
             <button v-if="loginContext" class="btn" type="button" @click="onLogin">Login</button>
             <button class="btn" type="button" @click="onRegister">Register</button>
+            <button v-if="!loginContext" class="btn" type="button"
+                    @click="loginContext = !loginContext; hintMessage = '';"><span class="doubleArrow">&#171; </span>Back to Login</button>
         </form>
     </div>
 </template>
@@ -29,6 +32,8 @@ export default class LoginPanel extends Vue {
     private passwordRepeated: string = String.Empty;
     private email: string = String.Empty;
     private loginContext: boolean = true;
+    private minPasswordLength = 6;
+    private hintMessage: string = String.Empty;
 
     private userUrl: string = Config.backendAuthUrl + '/user';
 
@@ -41,18 +46,28 @@ export default class LoginPanel extends Vue {
     }
 
     private onRegister() : void {
+       
         if(this.loginContext) {
             this.loginContext = !this.loginContext;
+            this.hintMessage = String.Empty;
             return;
         }
         
-        //TODO Email validation
+        let hint: string = String.Empty;
 
-        if(this.password == this.passwordRepeated) {
+        if(this.password.length >= this.minPasswordLength && 
+                this.password == this.passwordRepeated) {
             Axios.post(this.userUrl, new RegisterRequest(this.username, this.password, 
-                                                                this.passwordRepeated, this.email)).
+                                                                this.passwordRepeated)).
                 then(this.login);
-        }
+        } else {
+            if(this.password.length < this.minPasswordLength) {
+                hint = 'Password must have at least 6 digest';
+            } else if(this.password != this.passwordRepeated) {
+                hint = 'Passwords are not equal';
+            }
+            this.hintMessage = hint;
+        } 
     }
     
     private login(response : AxiosResponse<ResponseMessage>) : void {
@@ -61,12 +76,13 @@ export default class LoginPanel extends Vue {
                 localStorage.setItem(Config.tokenEntity, response.data.payload);
                 this.$router.push('/home');
             } catch (e) {
-                throw new Error("Invalid response format");
+                throw new Error('Invalid response format' + e);
             }
         } else {
             if(response.data.cause != undefined) {
                 console.log(response.data.cause.errorMessage + " " + 
                             response.data.cause.errorCode);
+                this.hintMessage = 'Password or username are incorrect';
             }
         }
     }
@@ -97,7 +113,11 @@ export default class LoginPanel extends Vue {
     outline: 0;
 }
 
-.formInput::placeholder{
+.passInput {
+    margin-bottom: 0px;
+}
+
+.formInput::placeholder {
     color: dimgray;
     font-style: italic;
 }
@@ -107,6 +127,17 @@ export default class LoginPanel extends Vue {
     width: 100%;
     height: 22px;  
     font-weight: 600;     
+}
+
+.hintText {
+    height: 8px;
+    font-weight: 400;
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+    margin: 2px 0 0 0;
+    font-size: 8px;
+    color: rgb(170, 2, 2);
+    font-style: italic;
 }
 </style>
 
