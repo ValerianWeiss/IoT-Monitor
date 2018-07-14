@@ -36,7 +36,6 @@ public class UserController {
     @PutMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
-                System.out.println("logging in");
         boolean isValid = this.restTemplate.postForObject(
                                 this.resourceServerAdress + "user/userDataValid", loginRequest, Boolean.class);
 
@@ -51,7 +50,6 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
 
-        System.out.println("try to register user");
         boolean registrationSuccessful = restTemplate.postForObject(
                     this.resourceServerAdress + "user/registerUser", registerRequest, Boolean.class);
         
