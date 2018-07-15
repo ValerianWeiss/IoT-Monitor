@@ -40,7 +40,7 @@ public class UserController {
                                 this.resourceServerAdress + "user/userDataValid", loginRequest, Boolean.class);
 
         if(isValid) {
-            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(loginRequest.getUsername())));
+            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(loginRequest.getUsername(), true)));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

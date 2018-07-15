@@ -7,6 +7,9 @@ public class AddDatapointRequest {
     private String endpointName;
     private DataPointData datapoint;
 
+
+    public AddDatapointRequest(){}
+
     public AddDatapointRequest(String endpointName, DataPointData dataPoint) {
         this.endpointName = endpointName;
         this.datapoint = dataPoint;

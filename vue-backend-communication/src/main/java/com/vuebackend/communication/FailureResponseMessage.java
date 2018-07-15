@@ -5,7 +5,9 @@ public class FailureResponseMessage extends ResponseMessage {
     private ErrorCause error;
 
 	
-	public FailureResponseMessage(){}
+	public FailureResponseMessage() {
+        super(false);
+    }
 	
     public FailureResponseMessage(ErrorCause error) {
         super(false);

@@ -21,6 +21,7 @@ public class Endpoint {
     private long id;
     private String name;
     private String description;
+    private String token;
     @OneToMany
     private Set<Datapoint> datapoint;
     
@@ -29,17 +30,24 @@ public class Endpoint {
     private User user;
 
 
-    public Endpoint(User user, String name) {
-        this.user = user;
-        this.name = name;
-        this.description = null;
+    public Endpoint(User user, String name, String token) {
+        this(user, name, token, null);
     }
-    
-    public Endpoint(User user, String name, String description) {
+
+    public Endpoint(User user, String name, String token, String description) {
         this.user = user;
         this.name = name;
         this.description = description;
+        this.token = token;
     }
+    
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
     public String getName() {
 		return name;

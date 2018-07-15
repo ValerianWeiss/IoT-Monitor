@@ -30,14 +30,25 @@ public class JWTTokenUtils {
     private JWTTokenUtils() {}
 
     // Subject should be the username
-    public static String create(String subject) throws IllegalArgumentException, UnsupportedEncodingException {
+    public static String create(String subject, boolean canExpire) throws IllegalArgumentException, UnsupportedEncodingException {
         Algorithm algorithm = Algorithm.HMAC256(secret);
         final long createdAtTime = System.currentTimeMillis();
-        final long expirationTime = createdAtTime + periodOfValidity;
+        String token;
 
+        if(canExpire) {
+            final long expirationTime = createdAtTime + periodOfValidity;
+            token = JWT.create()
+                        .withSubject(subject)
+                        .withIssuedAt(new Date(createdAtTime))
+                        .withExpiresAt(new Date(expirationTime))
+                        .sign(algorithm);
+        } else {
+            token = JWT.create()
+                        .withSubject(subject)
+                        .withIssuedAt(new Date(createdAtTime))
+                        .sign(algorithm);
+        }
         // Own claims can be inserted if needed
-        String token = JWT.create().withSubject(subject).withIssuedAt(new Date(createdAtTime))
-                .withExpiresAt(new Date(expirationTime)).sign(algorithm);
         System.out.println("token: " + token);
         return token;
     }
