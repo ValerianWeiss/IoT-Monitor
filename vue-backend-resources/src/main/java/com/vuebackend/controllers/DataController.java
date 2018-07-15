@@ -11,7 +11,6 @@ import com.vuebackend.entities.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,10 +23,6 @@ public class DataController {
     @Autowired
     private DatapointRepository datapointRepository;
 
-    @GetMapping("/hello")
-    public String test(){
-        return "Hello World!";
-    }
 
     @PostMapping("/data")
     public ResponseEntity<?> addDataPoint(@RequestBody AddDatapointRequest request) {
