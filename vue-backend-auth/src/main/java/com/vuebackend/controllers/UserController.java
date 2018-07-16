@@ -1,9 +1,11 @@
 package com.vuebackend.controllers;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.vuebackend.jwt.JWTTokenUtils;
-
+import com.vuebackend.communication.CreateTokenRequest;
 import com.vuebackend.communication.ErrorCause;
 import com.vuebackend.communication.ErrorCode;
 import com.vuebackend.communication.FailureResponseMessage;
@@ -37,10 +39,11 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
         boolean isValid = this.restTemplate.postForObject(
-                                this.resourceServerAdress + "user/userDataValid", loginRequest, Boolean.class);
+                                this.resourceServerAdress + "user/checkCredentials", loginRequest, Boolean.class);
 
         if(isValid) {
-            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(loginRequest.getUsername(), true)));
+            CreateTokenRequest tokenRequest = this.addUsernameClaim(loginRequest.getUsername());
+            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(tokenRequest, true)));
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -51,7 +54,7 @@ public class UserController {
             throws IllegalArgumentException, UnsupportedEncodingException {
 
         boolean registrationSuccessful = restTemplate.postForObject(
-                    this.resourceServerAdress + "user/registerUser", registerRequest, Boolean.class);
+                    this.resourceServerAdress + "user/register", registerRequest, Boolean.class);
         
         if(registrationSuccessful) {
             return login(new LoginRequest(registerRequest.getUsername(), registerRequest.getPassword()));
@@ -69,5 +72,13 @@ public class UserController {
             return ResponseEntity.ok(false);
         }
         return ResponseEntity.ok(true);
+    }
+
+    private CreateTokenRequest addUsernameClaim(String username) {
+        CreateTokenRequest tokenRequest = new CreateTokenRequest();
+        Map<String, String> claims = new HashMap<String, String>();
+        claims.put("username", username);
+        tokenRequest.addStringClaims(claims);
+        return tokenRequest;
     }
 }

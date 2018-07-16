@@ -11,19 +11,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/user")
+@CrossOrigin(origins = "${allowedOrigins}")
 public class UserController {
     
     @Autowired
     private UserRepository userRepository;
 
 
-    @PostMapping("/userDataValid")
+    @PostMapping("/checkCredentials")
     public ResponseEntity<Boolean> userDataValid(@RequestBody LoginRequest loginRequest) {
         
         String username = loginRequest.getUsername();
@@ -44,7 +46,7 @@ public class UserController {
         return ResponseEntity.ok(true);
     }
 
-    @PostMapping("/registerUser")
+    @PostMapping("/register")
     public ResponseEntity<Boolean> registerUser(@RequestBody RegisterRequest registerRequest) {
         
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent() ||

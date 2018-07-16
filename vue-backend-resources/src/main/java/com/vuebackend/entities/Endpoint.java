@@ -30,6 +30,8 @@ public class Endpoint {
     private User user;
 
 
+    public Endpoint(){}
+
     public Endpoint(User user, String name, String token) {
         this(user, name, token, null);
     }

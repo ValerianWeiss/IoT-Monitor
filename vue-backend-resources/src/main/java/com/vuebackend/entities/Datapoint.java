@@ -23,6 +23,8 @@ public class Datapoint {
     @ManyToOne
     private Endpoint endpoint;
 
+    
+    public Datapoint(){}
 
     public Datapoint(Endpoint endpoint, double value, long time) {
         this.endpoint = endpoint;

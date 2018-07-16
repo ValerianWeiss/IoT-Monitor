@@ -22,12 +22,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
+@CrossOrigin(origins = "${allowedOrigins}")
 public class EndpointController {
 
     @Autowired
@@ -85,6 +87,6 @@ public class EndpointController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", userHeader);
         HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
-        return this.rest.exchange(authServerAdress + "/register", HttpMethod.GET, entity, String.class).getBody();
+        return this.rest.exchange(authServerAdress + "/endpoint", HttpMethod.GET, entity, String.class).getBody();
     }
 }

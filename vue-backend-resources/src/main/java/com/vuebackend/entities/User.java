@@ -22,6 +22,8 @@ public class User {
 	private Set<Endpoint> endpoint;
 
 
+	public User(){}
+	
 	public User(String username, String password) {
         this.username = username;
 		this.password = password;
