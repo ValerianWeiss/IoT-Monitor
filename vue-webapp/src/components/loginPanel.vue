@@ -10,7 +10,11 @@
             <button v-if="loginContext" class="btn" type="button" @click="onLogin">Login</button>
             <button class="btn" type="button" @click="onRegister">Register</button>
             <button v-if="!loginContext" class="btn" type="button"
-                    @click="loginContext = !loginContext; pwHintMessage = '';"><span class="doubleArrow">&#171; </span>Back to Login</button>
+                    @click="loginContext = !loginContext;
+                            pwHintMessage = '';
+                            userHintMessage = ''">
+                    <span class="doubleArrow">&#171; </span>Back to Login
+            </button>
         </form>
     </div>
 </template>
@@ -24,7 +28,7 @@ import RegisterRequest from '../classes/communication/RegisterRequest';
 import ResponseMessage from '../classes/communication/ResponseMessage';
 import Config from '../appConfig.json';
 import { String } from 'typescript-string-operations';
-import { error } from 'util';
+import { ErrorCode } from '../classes/communication/Error';
 
 @Component
 export default class LoginPanel extends Vue {
@@ -53,6 +57,7 @@ export default class LoginPanel extends Vue {
         if(this.loginContext) {
             this.loginContext = !this.loginContext;
             this.pwHintMessage = String.Empty;
+            this.userHintMessage = String.Empty;
             return;
         }
         
@@ -86,12 +91,21 @@ export default class LoginPanel extends Vue {
                 throw new Error('Invalid response format' + e);
             }
         } else {
-            if(response.data.cause != undefined) {
-                console.log(response.data.cause.errorMessage + " " + 
-                            response.data.cause.errorCode);
-                this.pwHintMessage = 'Password or username are incorrect';
+            if(response.data.errorCause != undefined) {
+                console.log(response.data.errorCause.errorMessage + " " + 
+                            response.data.errorCause.errorCode);
+
+                let errorCode = response.data.errorCause.errorCode; 
+                                           
+                if(errorCode == ErrorCode.usernameAlreadyTaken) {
+                    this.userHintMessage = 'Username already taken';
+                } else {
+                    let msg = 'Password or username are incorrect';
+                    this.pwHintMessage = msg;
+                    this.userHintMessage = msg;
+                }
             } else {
-                this.userHintMessage = 'Username already taken';
+               console.error('unknown error code');
             }
         }
     }

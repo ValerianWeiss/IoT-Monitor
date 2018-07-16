@@ -24,7 +24,7 @@ const Store = new Vuex.Store({
 			let token = localStorage.getItem(Config.tokenEntity);
 			if(token != null) {
 				let data: any = JWT(token);
-				return data["sub"] as string;
+				return data["username"] as string;
 			}
 			return null;			
 		},
@@ -33,7 +33,6 @@ const Store = new Vuex.Store({
 			let token = localStorage.getItem(Config.tokenEntity);
 			if (token != null) {
 				let response = await Axios.post(Config.backendAuthUrl + '/user/isTokenValid/', {token});
-				console.log("returning" + response.data);
 				return response.data;
 			}
 			localStorage.removeItem(Config.tokenEntity);
@@ -54,9 +53,13 @@ const Store = new Vuex.Store({
 			localStorage.removeItem(Config.tokenEntity);
 		},
 
-		subscribe(state, subInfo: any) : void{
-			state.websocket.subscribe(subInfo.topic, subInfo.callback)
-		}
+		subscribe(state, subInfo: any) : void {
+			state.websocket.subscribe(subInfo.topic, subInfo.callback);
+		},
+
+		unsubscribe(state) : void {
+			state.websocket.unsubscribe();
+		},
 	}
 });
 

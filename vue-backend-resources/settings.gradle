@@ -3,4 +3,5 @@ project(':vue-backend-communication').projectDir = new File(settingsDir, '../vue
 
 include ':vue-backend-security'
 project(':vue-backend-security').projectDir = new File(settingsDir, '../vue-backend-security')
+
 rootProject.name = 'vue-backend-resources'

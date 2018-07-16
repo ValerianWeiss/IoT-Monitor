@@ -23,12 +23,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
+@RequestMapping("/endpoint")
 @CrossOrigin(origins = "${allowedOrigins}")
 public class EndpointController {
 
@@ -39,7 +42,7 @@ public class EndpointController {
     private EndpointRepository endpointRepository;
 
     @Autowired
-    private RestTemplate rest;
+    private RestTemplate restTemplate;
 
     @Value("${authServerAdress}")
     private String authServerAdress;
@@ -50,9 +53,9 @@ public class EndpointController {
         return builder.build();
     }
 
-    @PostMapping("/endpoint")
+    @PostMapping
     public ResponseEntity<?> addEndpoint(@RequestBody AddEndpointRequest request,
-                                                       @RequestHeader("Authorization") String headerValue) {
+                                         @RequestHeader("Authorization") String headerValue) {
         
         Optional<User> user  = userRepository.findByUsername(request.getUsername());
         if(user.isPresent()) {
@@ -87,6 +90,6 @@ public class EndpointController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", userHeader);
         HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
-        return this.rest.exchange(authServerAdress + "/endpoint", HttpMethod.GET, entity, String.class).getBody();
+        return this.restTemplate.exchange(authServerAdress + "/endpoint", HttpMethod.GET, entity, String.class).getBody();
     }
 }

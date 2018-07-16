@@ -21,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${tokenHeader}")
     private String tokenHeader;
-
+              
     @Value("${tokenValidationUrl}")
     private String tokenValidationUrl;
 

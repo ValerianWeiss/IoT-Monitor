@@ -37,7 +37,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             authToken = requestHeader.substring(7);
 
             HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
-
+            
             boolean tokenIsValid = 
                 this.restTemplate.postForObject(this.tokenValidationUrl, tokenRequest, Boolean.class);
 

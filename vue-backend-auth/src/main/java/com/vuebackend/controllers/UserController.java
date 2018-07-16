@@ -11,11 +11,11 @@ import com.vuebackend.communication.ErrorCode;
 import com.vuebackend.communication.FailureResponseMessage;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
+import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.SuccessResponseMessage;
 import com.vuebackend.communication.TokenRequest;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 public class UserController {
 
     private RestTemplate restTemplate = new RestTemplate();
+
     @Value("${resourceServer}")
     private String resourceServerAdress;
 
@@ -38,14 +39,15 @@ public class UserController {
     @PutMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
+
         boolean isValid = this.restTemplate.postForObject(
-                                this.resourceServerAdress + "user/checkCredentials", loginRequest, Boolean.class);
+                                this.resourceServerAdress + "/user/checkCredentials", loginRequest, Boolean.class);
 
         if(isValid) {
             CreateTokenRequest tokenRequest = this.addUsernameClaim(loginRequest.getUsername());
             return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(tokenRequest, true)));
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.credentialsIncorrect)));
         }
     }
 
@@ -53,13 +55,13 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
 
-        boolean registrationSuccessful = restTemplate.postForObject(
-                    this.resourceServerAdress + "user/register", registerRequest, Boolean.class);
+        boolean registrationSuccessful = this.restTemplate.postForObject(
+                    this.resourceServerAdress + "/user/register", registerRequest, Boolean.class);
         
         if(registrationSuccessful) {
             return login(new LoginRequest(registerRequest.getUsername(), registerRequest.getPassword()));
         }
-        return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.unknownError)));
+        return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.usernameAlreadyTaken)));
     }
 
     @PostMapping("/isTokenValid")

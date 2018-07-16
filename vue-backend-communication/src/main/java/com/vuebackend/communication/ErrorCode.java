@@ -1,7 +1,7 @@
 package com.vuebackend.communication;
 
 public enum ErrorCode {
-    usernameIncorrect(101),
+    credentialsIncorrect(101),
     usernameAlreadyTaken(102),
     emailAlreadyTaken(103),
     passwordIncorrect(104),

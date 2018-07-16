@@ -26,7 +26,7 @@ public class UserController {
 
 
     @PostMapping("/checkCredentials")
-    public ResponseEntity<Boolean> userDataValid(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Boolean> checkCredentials(@RequestBody LoginRequest loginRequest) {
         
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
@@ -42,7 +42,6 @@ public class UserController {
             }
             return ResponseEntity.ok(false);
         }
-
         return ResponseEntity.ok(true);
     }
 
