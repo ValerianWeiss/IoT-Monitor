@@ -14,7 +14,7 @@ public class EndpointController {
     public ResponseEntity<String> getEndpointToken(@RequestBody CreateTokenRequest request) {
         
         try {
-			return ResponseEntity.ok(JWTTokenUtils.create(request, false));
+			return ResponseEntity.ok(JWTTokenUtils.create(request, request.canExpire()));
 		} catch (Exception e) {
 			return ResponseEntity.ok(null);
 		}

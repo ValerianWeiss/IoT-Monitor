@@ -21,7 +21,7 @@ const Store = new Vuex.Store({
 		},
 
 		getAuthHeader: (state) : any => {
-			return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity), "Access-Control-Allow-Origin" : "*" };
+			return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity) };
 		},
 
 		getUsername: (state) : String | null => {	

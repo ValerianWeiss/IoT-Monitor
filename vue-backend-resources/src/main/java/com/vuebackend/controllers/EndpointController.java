@@ -5,9 +5,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.vuebackend.communication.CreateTokenRequest;
+import com.vuebackend.communication.ErrorCause;
+import com.vuebackend.communication.ErrorCode;
 import com.vuebackend.communication.SuccessResponseMessage;
 import com.vuebackend.communication.AddEndpointRequest;
 import com.vuebackend.communication.FailureResponseMessage;
+import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.dbrepositories.EndpointRepository;
 import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.entities.Endpoint;
@@ -53,7 +56,7 @@ public class EndpointController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addEndpoint(@RequestBody AddEndpointRequest request,
+    public ResponseEntity<ResponseMessage> addEndpoint(@RequestBody AddEndpointRequest request,
                                          @RequestHeader("Authorization") String headerValue) {
         
         Optional<User> user  = userRepository.findByUsername(request.getUsername());
@@ -62,9 +65,9 @@ public class EndpointController {
             String deviceToken = getDeviceToken(request.getUsername(),
                                                 request.getName(),
                                                 headerValue);
-
+            System.out.println("creating device with token " + deviceToken);
             if(deviceToken == null) {
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.unknownError)));
             }
             
             if(request.getDescription() == null) {
@@ -85,7 +88,7 @@ public class EndpointController {
         Map<String, String> claims = new HashMap<String, String>();
         claims.put("username", username);
         claims.put("deviceName", deviceName);
-        CreateTokenRequest requestData = new CreateTokenRequest().addStringClaims(claims);
+        CreateTokenRequest requestData = new CreateTokenRequest(false).addStringClaims(claims);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", userHeader);
         HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
