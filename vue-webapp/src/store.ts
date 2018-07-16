@@ -20,6 +20,10 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
+		getAuthHeader: (state) : any => {
+			return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity) };
+		},
+
 		getUsername: (state) : String | null => {	
 			let token = localStorage.getItem(Config.tokenEntity);
 			if(token != null) {
@@ -35,7 +39,6 @@ const Store = new Vuex.Store({
 				let response = await Axios.post(Config.backendAuthUrl + '/user/isTokenValid/', {token});
 				return response.data;
 			}
-			localStorage.removeItem(Config.tokenEntity);
 			return false;
 		}
 	},

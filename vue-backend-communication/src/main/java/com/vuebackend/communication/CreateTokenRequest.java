@@ -8,7 +8,20 @@ import java.util.Map;
 public class CreateTokenRequest {
     
     private List<Map<String,?>> claimList = new ArrayList<Map<String,?>>();
+    private boolean expires;
 
+
+    public CreateTokenRequest() {
+        this(true);
+    }
+
+    public CreateTokenRequest(boolean expires) {
+        this.expires = expires;
+    }
+
+    public boolean canExpire() {
+        return this.expires;
+    }
 
     public <T> Map<String, T> getClaims(Class<T> type) {
         int index = checkIfMapExists(type);
