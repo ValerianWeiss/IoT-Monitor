@@ -32,7 +32,7 @@ public class DataController {
 
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> addDataPoint(@RequestBody AddDatapointRequest request) {
+    public ResponseEntity<ResponseMessage> addDatapoint(@RequestBody AddDatapointRequest request) {
         
         Optional<Endpoint> endpoint = 
                 userRepository.findEndpointByNameOfUser(request.getUsername(),
