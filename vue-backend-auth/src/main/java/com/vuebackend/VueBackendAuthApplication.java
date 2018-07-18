@@ -9,7 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 @EntityScan("com.vuebackend.entities")
 @SpringBootApplication
 public class VueBackendAuthApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(VueBackendAuthApplication.class, args);
 	}

@@ -59,13 +59,20 @@ public class EndpointController {
     public ResponseEntity<ResponseMessage> addEndpoint(@RequestBody AddEndpointRequest request,
                                          @RequestHeader("Authorization") String headerValue) {
         
-        Optional<User> user  = userRepository.findByUsername(request.getUsername());
-        if(user.isPresent()) {
+        Optional<User> user  = this.userRepository.findByUsername(request.getUsername());
+        String deviceName = request.getName();
+
+        if(user.isPresent() && deviceName != null && !deviceName.isEmpty()) {
+
+            if(this.userRepository.findEndpointByNameOfUser(request.getUsername(), deviceName).isPresent()) {
+                return ResponseEntity.ok(new FailureResponseMessage());
+            }
+
             Endpoint newEndpoint;
             String deviceToken = getDeviceToken(request.getUsername(),
                                                 request.getName(),
                                                 headerValue);
-            System.out.println("creating device with token " + deviceToken);
+
             if(deviceToken == null) {
                 return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.unknownError)));
             }
@@ -85,13 +92,19 @@ public class EndpointController {
     }
 
     private String getDeviceToken(String username, String deviceName, String userHeader) {
-        Map<String, String> claims = new HashMap<String, String>();
+        Map<String, String> claims = new HashMap<>();
         claims.put("username", username);
         claims.put("deviceName", deviceName);
+        
         CreateTokenRequest requestData = new CreateTokenRequest(false).addStringClaims(claims);
+        
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", userHeader);
+        headers.set("Content-Type", "application/json");
         HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
-        return this.restTemplate.exchange(authServerAdress + "/endpoint", HttpMethod.GET, entity, String.class).getBody();
+
+        String deviceToken = this.restTemplate.exchange(
+            authServerAdress + "/endpoint", HttpMethod.POST, entity, String.class).getBody();
+        return deviceToken;
     }
 }
