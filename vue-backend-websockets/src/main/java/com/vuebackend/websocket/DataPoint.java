@@ -1,4 +1,4 @@
-package com.vuebackend.communication;
+package com.vuebackend.websocket;
 
 public class DataPoint{
 

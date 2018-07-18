@@ -1,4 +1,4 @@
-package com.vuebackend.communication;
+package com.vuebackend.websocket;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
