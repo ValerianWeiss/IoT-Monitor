@@ -12,6 +12,7 @@
                         v-for="count in graphCount" :key=count
                         v-on:graphViewMounted="graphViewMounted"/>
             </div>
+            <button @click="newEndpoint">test</button>
         </div>
   </div>
 </template>
@@ -21,6 +22,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Navigationbar from './navigationbar.vue';
 import GraphView from './graphView.vue';
+import Axios from 'axios';
 
 @Component({
     components: {
@@ -62,6 +64,16 @@ export default class Home extends Vue {
         } else {
             this.$router.push('/error');
         }
+    }
+
+    private newEndpoint() : void {
+       Axios.post("http://localhost:8090/endpoint", {
+            name:"testdevice",
+            description:"this is a test",
+            username:"hello"
+        }, {headers: this.$store.getters.getAuthHeader}).then(res => {
+            console.log(res);
+        });
     }
 }
 </script>

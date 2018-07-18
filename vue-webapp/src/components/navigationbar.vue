@@ -16,6 +16,7 @@ import { Component } from 'vue-property-decorator';
 export default class Navigationbar extends Vue {
 
     private logout() {
+        this.$store.commit('unsubscribe');
         this.$store.commit('deleteToken');
         this.$router.push('/');
     }

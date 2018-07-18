@@ -1,0 +1,3 @@
+include ':vue-backend-communication'
+project(':vue-backend-communication').projectDir = new File(settingsDir, '../vue-backend-communication')
+rootProject.name = 'vue-backend-security'
