@@ -1,5 +1,6 @@
 package com.vuebackend.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ public class Endpoint {
     private String description;
     private String token;
     @OneToMany
-    private Set<Datapoint> datapoint;
+    private Set<Sensor> sensors;
     
     @NonNull
     @ManyToOne
@@ -65,5 +66,13 @@ public class Endpoint {
 
     public void setName(String name) {
 		this.name = name;
-	}
+    }
+    
+    public void addSensor(Sensor sensor) {
+        this.sensors.add(sensor);
+    }
+
+    public Set<Sensor> getSensors(){
+        return this.sensors;
+    }
 }

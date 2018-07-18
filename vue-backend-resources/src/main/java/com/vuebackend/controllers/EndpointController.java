@@ -12,8 +12,10 @@ import com.vuebackend.communication.AddEndpointRequest;
 import com.vuebackend.communication.FailureResponseMessage;
 import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.dbrepositories.EndpointRepository;
+import com.vuebackend.dbrepositories.SensorRepository;
 import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.entities.Endpoint;
+import com.vuebackend.entities.Sensor;
 import com.vuebackend.entities.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class EndpointController {
     @Autowired
     private EndpointRepository endpointRepository;
 
+    @Autowired SensorRepository sensorRepository;
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -61,8 +65,10 @@ public class EndpointController {
         
         Optional<User> user  = this.userRepository.findByUsername(request.getUsername());
         String deviceName = request.getName();
+        String sensorName = request.getSensorName();
 
-        if(user.isPresent() && deviceName != null && !deviceName.isEmpty()) {
+        if(user.isPresent() && deviceName != null && !deviceName.isEmpty()
+            && sensorName != null && !sensorName.isEmpty()) {
 
             if(this.userRepository.findEndpointByNameOfUser(request.getUsername(), deviceName).isPresent()) {
                 return ResponseEntity.ok(new FailureResponseMessage());
@@ -85,7 +91,11 @@ public class EndpointController {
                                            deviceToken,
                                            request.getDescription());
             }
+
+            Sensor sensor = new Sensor(sensorName, newEndpoint);
             this.endpointRepository.save(newEndpoint);
+            this.sensorRepository.save(sensor);
+
             return ResponseEntity.ok(new SuccessResponseMessage(deviceToken));
         }
         return ResponseEntity.ok(new FailureResponseMessage());

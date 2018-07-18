@@ -21,13 +21,13 @@ public class Datapoint {
   
     @NonNull
     @ManyToOne
-    private Endpoint endpoint;
+    private Sensor sensor;
 
     
     public Datapoint(){}
 
-    public Datapoint(Endpoint endpoint, double value, long time) {
-        this.endpoint = endpoint;
+    public Datapoint(Sensor sensor, double value, long time) {
+        this.sensor = sensor;
         this.value = value;
         this.time = time;
     }
@@ -46,5 +46,13 @@ public class Datapoint {
 
     public void setTime(long time) {
 		this.time = time;
-	}
+    }
+    
+    public Sensor getSensor() {
+        return this.sensor;
+    }
+
+    public void setSensor(Sensor sensor) {
+        this.sensor = sensor;
+    }
 }

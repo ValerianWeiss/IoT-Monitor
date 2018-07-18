@@ -7,9 +7,11 @@ import com.vuebackend.communication.FailureResponseMessage;
 import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.SuccessResponseMessage;
 import com.vuebackend.dbrepositories.DatapointRepository;
+import com.vuebackend.dbrepositories.SensorRepository;
 import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.entities.Datapoint;
 import com.vuebackend.entities.Endpoint;
+import com.vuebackend.entities.Sensor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,9 @@ public class DataController {
     @Autowired
     private DatapointRepository datapointRepository;
 
+    @Autowired
+    SensorRepository sensorRepository;
+
 
     @PostMapping
     public ResponseEntity<ResponseMessage> addDatapoint(@RequestBody AddDatapointRequest request) {
@@ -38,8 +43,11 @@ public class DataController {
                 userRepository.findEndpointByNameOfUser(request.getUsername(),
                                                         request.getEndpointName());
 
-        if(endpoint.isPresent()) {
-            Datapoint datapoint = new Datapoint(endpoint.get(),
+        Optional<Sensor> sensor =
+                sensorRepository.findByName(request.getEndpointName(), request.getSensorName());
+
+        if(endpoint.isPresent() && sensor.isPresent()) {
+            Datapoint datapoint = new Datapoint(sensor.get(),
                                                 request.getDatapoint().getValue(),
                                                 request.getDatapoint().getTime());
             this.datapointRepository.save(datapoint);

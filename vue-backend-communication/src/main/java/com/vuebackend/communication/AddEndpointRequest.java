@@ -4,11 +4,12 @@ public class AddEndpointRequest {
     private String name;
     private String description;
     private String username;
+    private String sensorName;
 
 
-    public AddEndpointRequest(){}
+    public AddEndpointRequest(){}	
 
-    public AddEndpointRequest(String username, String name) {
+	public AddEndpointRequest(String username, String name) {
         this(username, name, null);
     }
 
@@ -29,4 +30,12 @@ public class AddEndpointRequest {
     public String getDescription() {
         return this.description;
     }
+    
+    public String getSensorName() {
+		return sensorName;
+	}
+
+	public void setSensorName(String sensorName) {
+		this.sensorName = sensorName;
+	}
 }
