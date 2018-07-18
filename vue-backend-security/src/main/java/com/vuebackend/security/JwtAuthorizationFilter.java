@@ -48,7 +48,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             throw new InvalidParameterException("No token could be found in the header or is invalid");
         }
 
-        System.out.println("Token was valid");
         chain.doFilter(request, response);
     }
 }

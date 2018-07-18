@@ -49,7 +49,7 @@ public class JWTTokenUtils {
 
         addClaims(tokenBuilder, tokenRequest);
         String token = tokenBuilder.sign(algorithm);
-        // Own claims can be inserted if needed
+        
         System.out.println("token: " + token);
         return token;
     }

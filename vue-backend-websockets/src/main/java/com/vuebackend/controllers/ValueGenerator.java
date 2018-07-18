@@ -1,6 +1,6 @@
 package com.vuebackend.controllers;
 
-import com.vuebackend.communication.DataPoint;
+import com.vuebackend.websocket.DataPoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

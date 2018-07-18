@@ -25,7 +25,7 @@ public class CreateTokenRequest {
 
     public <T> Map<String, T> getClaims(Class<T> type) {
         int index = checkIfMapExists(type);
-        if(index >= 0) {
+        if(index >= 0 && claimList.get(index).size() > 0) {
             return (Map<String, T>)claimList.get(index);
         } else {
             return null;

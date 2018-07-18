@@ -1,4 +1,4 @@
-package com.vuebackend.communication;
+package com.vuebackend.websocket;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
