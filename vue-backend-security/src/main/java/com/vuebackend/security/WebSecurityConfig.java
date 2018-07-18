@@ -23,13 +23,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity.ignoring().antMatchers("/user/**");
+        // Section for Resource Server
+        webSecurity.ignoring().antMatchers("/user/**")
+        .and()
+        // Section for Auth Server
+        .ignoring().antMatchers("/user**");
     }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors()
             .and()
+            .formLogin().disable().logout().disable()
             .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             // Custom JWT based security filter
