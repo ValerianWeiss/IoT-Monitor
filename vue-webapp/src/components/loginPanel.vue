@@ -39,6 +39,7 @@ export default class LoginPanel extends Vue {
     private email: string = String.Empty;
     private loginContext: boolean = true;
     private minPasswordLength = 6;
+    private minUsernameLength = 6;
     private pwHintMessage: string = String.Empty;
     private userHintMessage: string = String.Empty;
 
@@ -63,8 +64,10 @@ export default class LoginPanel extends Vue {
         
         let hint: string = String.Empty;
 
-        if(this.password.length >= this.minPasswordLength && 
-                this.password == this.passwordRepeated) {
+        if(this.password.length >= this.minPasswordLength  
+            && this.password == this.passwordRepeated  
+            && this.username.length >= this.minUsernameLength) {
+
             Axios.post(this.userUrl, new RegisterRequest(this.username, this.password, 
                                                                 this.passwordRepeated)).
                 then(this.login).catch(errror => {
@@ -76,10 +79,11 @@ export default class LoginPanel extends Vue {
                 hint = 'Password must have at least 6 digest';
             } else if(this.password != this.passwordRepeated) {
                 hint = 'Passwords are not equal';
+            } else if(this.username.length < this.minUsernameLength) {
+                this.userHintMessage = 'Username must have at least 6 digest';
             }
         } 
         this.pwHintMessage = hint;
-        this.userHintMessage = String.Empty;
     }
     
     private login(response : AxiosResponse<ResponseMessage>) : void {
@@ -159,6 +163,10 @@ export default class LoginPanel extends Vue {
     font-size: 8px;
     color: rgb(170, 2, 2);
     font-style: italic;
+}
+
+#loginForm {
+    transform: scale(1.2);
 }
 </style>
 

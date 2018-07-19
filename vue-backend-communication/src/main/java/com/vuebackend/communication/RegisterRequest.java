@@ -40,7 +40,7 @@ public class RegisterRequest {
 		this.passwordRepeated = passwordRepeated;
 	}
 
-	public boolean passwordsNotEqual() {
-		return !this.password.equals(this.passwordRepeated);
+	public boolean passwordsEqual() {
+		return this.password.equals(this.passwordRepeated);
 	}
 }

@@ -24,6 +24,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private static int minPasswordLength = 6;
+    private static int minUsernameLength = 6;
+
 
     @PostMapping("/checkCredentials")
     public ResponseEntity<Boolean> checkCredentials(@RequestBody LoginRequest loginRequest) {
@@ -48,8 +51,11 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Boolean> registerUser(@RequestBody RegisterRequest registerRequest) {
         
-        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent() ||
-                registerRequest.passwordsNotEqual()) {
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()
+            || !registerRequest.passwordsEqual()
+            || registerRequest.getPassword().length() < minPasswordLength
+            || registerRequest.getUsername().length() < minUsernameLength)  {
+
             return ResponseEntity.ok(false);
         }
 
