@@ -21,7 +21,7 @@ public class CorsHeadersFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-        response.addHeader("Access-Control-Allow-Headers", "Authorization");        
+        response.addHeader("Access-Control-Allow-Headers", "authorization");        
         
         filterChain.doFilter(request, response);
 	}

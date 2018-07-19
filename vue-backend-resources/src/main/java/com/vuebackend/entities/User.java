@@ -19,7 +19,7 @@ public class User {
     private String username;
 	private String password;
 	@OneToMany
-	private Set<Endpoint> endpoint;
+	private Set<Endpoint> endpoints;
 
 
 	public User(){}

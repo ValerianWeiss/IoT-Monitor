@@ -33,7 +33,6 @@ export default class WebSocket {
     }
 
     public unsubscribe() : void {
-        console.log(this.subscriptions.length);
         
         if(this.subscriptions.length > 0) {
             this.subscriptions.forEach(subscription => {

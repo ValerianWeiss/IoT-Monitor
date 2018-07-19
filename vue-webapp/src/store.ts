@@ -16,15 +16,15 @@ const Store = new Vuex.Store({
 	},
 
 	getters: {
-		getHeading: (state) : string => {
+		heading: (state) : string => {
 			return state.heading;
 		},
 
-		getAuthHeader: (state) : any => {
+		authHeader: (state) : any => {
 			return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity) };
 		},
 
-		getUsername: (state) : String | null => {	
+		username: (state) : String | null => {	
 			let token = localStorage.getItem(Config.tokenEntity);
 			if(token != null) {
 				let data: any = JWT(token);

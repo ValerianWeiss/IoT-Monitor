@@ -1,20 +1,20 @@
 package com.vuebackend.communication;
 
-public class SuccessResponseMessage extends ResponseMessage {
+public class SuccessResponseMessage <T> extends ResponseMessage {
     
-    private Object payload;
+    private T payload;
 
 	
     public SuccessResponseMessage() {
         super(true);
     }
 
-    public SuccessResponseMessage(Object payload) {
+    public SuccessResponseMessage(T payload) {
         super(true);
         this.payload = payload;
     }
 
-	public Object getPayload() {
+	public T getPayload() {
 		return payload;
 	}
 }
