@@ -2,7 +2,7 @@
     <div id="navigationbar">
         <nav id="wrapper">
             <button class="btn" id="logoutBtn" @click="logout">
-                <p class="headings">Logout</p>
+                <h3 class="headings">Logout</h3>
             </button>
         </nav>
     </div>

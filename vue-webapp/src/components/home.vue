@@ -2,16 +2,22 @@
   <div id="home">
         <navigationbar></navigationbar>
         <div id="main">
-            <h1 id="mainHeading">Content</h1>
-            <div id="lineSeperator"/>
-            <div id="deviceList" >
-                
+            <h1 id="mainHeading">Overview</h1>
+            <div id="lineSeperator"></div>
+            <div id="deviceList">
+                <h3 id="deviceListHeading">Endpoints</h3>
+                <input id="deviceSearch" type="text" placeholder="Search..."/>
+                <div id="listItemContainer">
+                    <endpointListItem 
+                        v-for="device in devices" :key=device.name
+                        v-bind:endpoint="device"/>
+                </div>
             </div>
             <button class="graphButton" v-for="topic in graphTopics" :key=topic
                     @click="createGraphView(topic)">Show Graph {{topic}}
-                </button>
+            </button>
             <div class="graphContainer">
-                    <GraphView v-show="true"
+                    <graphView
                         v-for="count in graphCount" :key=count
                         v-on:graphViewMounted="graphViewMounted"/>
             </div>
@@ -23,7 +29,7 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Navigationbar from './navigationbar.vue';
-import DeviceListItem from './DeviceListItem.vue';
+import EndpointListItem from './endpointListItem.vue';
 import GraphView from './graphView.vue';
 import Device from '../classes/Endpoint';
 import Config from '../appConfig.json';
@@ -34,6 +40,7 @@ import Endpoint from '../classes/Endpoint';
     components: {
         Navigationbar,
         GraphView,
+        EndpointListItem,
     }
 })
 export default class Home extends Vue {
@@ -43,10 +50,7 @@ export default class Home extends Vue {
     private graphTopics: string[];
     private graphCounter: number;
     private devices: Device[];
-
-    public get graphCount() : number {
-        return this.graphCounter;
-    }
+   
 
     public constructor() {
         super();
@@ -58,8 +62,12 @@ export default class Home extends Vue {
         this.getDevices();
     }
 
+     private get graphCount() : number {
+        return this.graphCounter;
+    }
+
     private createGraphView(topic: string) : void {
-        this.graphMapper.set( this.graphMapper.size, topic);
+        this.graphMapper.set(this.graphMapper.size, topic);
         this.graphCounter = this.graphMapper.size;
     }
 
@@ -76,7 +84,6 @@ export default class Home extends Vue {
     }
 
     private getDevices() : void {
-        
         Axios.get(Config.backendRecourceUrl + '/user/' + this.$store.getters.username + '/device/all',
             { 
                 headers : this.$store.getters.authHeader
@@ -85,7 +92,7 @@ export default class Home extends Vue {
                 if(data.success) {
                     let resDevices: any[] = data.payload;
                     resDevices.forEach((device: any) => {
-                        this.devices.push(new Endpoint(device.name, device.descripton, device.token));
+                        this.devices.push(new Endpoint(device.name, device.description, device.token));
                     })
                 }
             });
@@ -96,9 +103,11 @@ export default class Home extends Vue {
 <style scoped>
 
 #main {
-    width: 80vw;
-    padding: 30px;
-    margin: auto;
+    position: relative;
+    margin-left: 180px;
+    width: calc(100% - 180px);
+    height: calc(100% - 60px);
+    padding: 0;
 }
 
 #mainHeading {
@@ -106,9 +115,43 @@ export default class Home extends Vue {
     font-weight: 600;
 }
 
+#deviceSearch {
+    margin-left: 10px;
+    width: 220px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    height: 20px;
+    border: thin;
+    padding-left: 5px;
+}
+
+#deviceSearch::placeholder {
+    color: dimgray;
+    font-style: italic;
+}
+
+#deviceListHeading {
+    margin: 5px 0 10px 10px;
+}
+
+#deviceList {
+    position: relative;
+    height: calc(100vh - 155px);
+    width: 250px;
+    margin-right: 10px;
+    float: left;
+    background-color: #EEE;
+}
+
+#listItemContainer {
+    overflow-x: auto;
+    width: 100%;
+    height: calc(100% - 71px);
+}
+
 #lineSeperator {
     position: relative;
-    margin: 0;
+    margin-left: 0px;
     width: 100%;
     background-color: black;
     height: 2px;

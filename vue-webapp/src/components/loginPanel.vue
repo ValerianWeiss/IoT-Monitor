@@ -125,26 +125,8 @@ export default class LoginPanel extends Vue {
     width: 250px;
 }
 
-.formInput {
-    width: 100%;
-    margin: 0;
-    padding: 5px 0 2px 0;
-    background: 0;
-    border: 0;
-    border-bottom: 1px solid #000;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 1px;
-    outline: 0;
-}
-
 .passInput {
     margin-bottom: 0px;
-}
-
-.formInput::placeholder {
-    color: dimgray;
-    font-style: italic;
 }
 
 .btn {
