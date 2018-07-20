@@ -35,6 +35,7 @@ import Device from '../classes/Endpoint';
 import Config from '../appConfig.json';
 import Axios, { AxiosResponse } from 'axios';
 import Endpoint from '../classes/Endpoint';
+import { Route } from 'vue-router';
 
 @Component({
     components: {
@@ -49,8 +50,8 @@ export default class Home extends Vue {
     private graphViews: GraphView[];
     private graphTopics: string[];
     private graphCounter: number;
-    private devices: Device[];
-   
+    private devices: Endpoint[];
+
 
     public constructor() {
         super();
@@ -58,11 +59,10 @@ export default class Home extends Vue {
         this.graphMapper = new Map();
         this.graphCounter = 0;
         this.graphTopics = ['graph/rand', 'graph/test'];
-        this.devices = [];
-        this.getDevices();
+        this.devices = [] as Endpoint[];
     }
 
-     private get graphCount() : number {
+    private get graphCount() : number {
         return this.graphCounter;
     }
 
@@ -76,7 +76,7 @@ export default class Home extends Vue {
         this.graphViews.push(graphView);
         graphView.setHeading('Hello World ' + this.graphViews.length);
         if(topic != undefined) {
-            graphView.addDataEndpoint(topic);
+            graphView.addDatapoint(topic);
             graphView.setName(topic);
         } else {
             this.$router.push('/error');
@@ -84,19 +84,30 @@ export default class Home extends Vue {
     }
 
     private getDevices() : void {
+        console.log("getting devices for user " + this.$store.getters.username);
+			
+        this.devices = [] as Endpoint[];
+        console.log(this.devices);
+        
         Axios.get(Config.backendRecourceUrl + '/user/' + this.$store.getters.username + '/device/all',
             { 
                 headers : this.$store.getters.authHeader
-            }).then((response: AxiosResponse) => {
-                let data = response.data;
-                if(data.success) {
-                    let resDevices: any[] = data.payload;
-                    resDevices.forEach((device: any) => {
-                        this.devices.push(new Endpoint(device.name, device.description, device.token));
-                    })
-                }
-            });
+            })
+        .then((response: AxiosResponse) => {
+            let data = response.data;
+            if(data.success) {
+                let resDevices: any[] = data.payload;
+                resDevices.forEach((device: any) => {
+                    this.devices.push(new Endpoint(device.name, device.description, device.token));
+                })
+            }
+        });
     }
+
+   mounted () {
+       console.log("getting devices");
+       this.getDevices();
+   }
 }
 </script>
 

@@ -90,6 +90,7 @@ export default class LoginPanel extends Vue {
         if(response.data.success) {
             try {
                 localStorage.setItem(Config.tokenEntity, response.data.payload);
+                this.$store.commit('setUsername');
                 this.$router.push('/home');
             } catch (e) {
                 throw new Error('Invalid response format' + e);

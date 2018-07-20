@@ -13,6 +13,7 @@ const Store = new Vuex.Store({
 	state: {
 		websocket: new WebSocket(),
 		heading: String.Empty,
+		username: getUsername(),
 	},
 
 	getters: {
@@ -20,17 +21,12 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
-		authHeader: (state) : any => {
+		authHeader: () : any => {
 			return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity) };
 		},
 
 		username: (state) : String | null => {	
-			let token = localStorage.getItem(Config.tokenEntity);
-			if(token != null) {
-				let data: any = JWT(token);
-				return data["username"] as string;
-			}
-			return null;			
+			return state.username;			
 		},
 
 		isTokenValid: async (state: any) : Promise<boolean> => {
@@ -40,7 +36,7 @@ const Store = new Vuex.Store({
 				return response.data;
 			}
 			return false;
-		}
+		},
 	},
 
 	actions: {
@@ -52,7 +48,7 @@ const Store = new Vuex.Store({
 			state.heading = heading;
 		},
 
-		deleteToken(state) : void {
+		deleteToken() : void {
 			localStorage.removeItem(Config.tokenEntity);
 		},
 
@@ -63,7 +59,21 @@ const Store = new Vuex.Store({
 		unsubscribe(state) : void {
 			state.websocket.unsubscribe();
 		},
+
+		setUsername(state) : void {
+			state.username = getUsername();
+		}
 	}
 });
+
+function getUsername() : string | null {
+	let token = localStorage.getItem(Config.tokenEntity);
+
+		if(token != null) {
+			let data: any = JWT(token);
+			return data["username"] as string;
+		}
+		return String.Empty;
+}
 
 export default Store;

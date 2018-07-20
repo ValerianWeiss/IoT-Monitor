@@ -47,7 +47,7 @@ export default class GraphView extends Vue {
         return this.name;
     }
 
-    public addDataEndpoint(topic: string) : void {
+    public addDatapoint(topic: string) : void {
         this.deltaTime = Date.now()
         this.$store.commit('subscribe', {topic:topic, callback: (frame?: Frame) => {
                 if(frame != undefined) {

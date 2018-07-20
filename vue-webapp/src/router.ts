@@ -29,7 +29,7 @@ const Router = new VueRouter({
 			path: '/home',
 			name: 'home',
 			component: home,
-			beforeEnter: checkAuthentication
+			beforeEnter: checkAuthentication,
 		},
 		{
 			path: '/error',
@@ -39,12 +39,13 @@ const Router = new VueRouter({
 	]
 });
 
-Router.beforeEach((to, from, next) => {
+Router.beforeEach((to: Route, from: Route, next: any) => {
 	Store.commit('setHeading', to.name);
 	next();
 })
 
-function checkAuthentication (to: Route, from: Route, next: any) {
+
+function checkAuthentication(to: Route, from: Route, next: any) {
 	Store.getters.isTokenValid.then((result: boolean) => {
 		if(!result) {
 			Router.push('/');
@@ -55,6 +56,5 @@ function checkAuthentication (to: Route, from: Route, next: any) {
 		next();	
 	});
 }
-
 
 export default Router;
