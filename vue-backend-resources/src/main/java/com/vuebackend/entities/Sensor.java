@@ -1,6 +1,7 @@
 package com.vuebackend.entities;
 
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class Sensor {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
     private String name;
+    private String topic;
     
     @ManyToOne
     private Endpoint endpoint;
@@ -28,10 +30,25 @@ public class Sensor {
 
     public Sensor(){}
 
+    public Sensor(String name, String topic) {
+        this.name = name;
+        this.topic = topic;
+        this.endpoint = null;
+    }
+
 	public Sensor(String name, Endpoint endpoint) {
         this.name = name;
         this.endpoint = endpoint;
+        this.topic = UUID.randomUUID().toString();
     }
+    
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
     
 	public String getName() {
 		return name;

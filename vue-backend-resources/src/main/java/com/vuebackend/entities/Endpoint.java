@@ -1,13 +1,10 @@
 package com.vuebackend.entities;
 
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.lang.NonNull;
@@ -22,9 +19,7 @@ public class Endpoint {
     private String name;
     private String description;
     private String token;
-    @OneToMany
-    private Set<Sensor> sensors;
-    
+   
     @NonNull
     @ManyToOne
     private User user;
@@ -65,13 +60,5 @@ public class Endpoint {
 
     public void setName(String name) {
 		this.name = name;
-    }
-    
-    public void addSensor(Sensor sensor) {
-        this.sensors.add(sensor);
-    }
-
-    public Set<Sensor> getSensors(){
-        return this.sensors;
     }
 }

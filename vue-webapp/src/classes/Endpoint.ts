@@ -1,12 +1,14 @@
+import Sensor from './Sensor';
+
 export default class Endpoint {
     
     private name: string;
     private description: string;
     private token: string;
-    private sensors: any[];
+    private sensors: Sensor[];
 
 
-    constructor(name: string, description: string, token: string) {
+    constructor(name: string, description: string, token: string, sensors: Sensor[]) {
         this.name = name;
         this.description = description;
         this.token = token;

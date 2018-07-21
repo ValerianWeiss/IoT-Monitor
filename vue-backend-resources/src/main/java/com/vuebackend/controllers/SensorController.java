@@ -44,7 +44,7 @@ public class SensorController {
                 
             Sensor sensor = new Sensor(sensorName, endpoint.get());
             sensorRepository.save(sensor);
-            return ResponseEntity.ok(new SuccessResponseMessage());
+            return ResponseEntity.ok(new SuccessResponseMessage<Object>());
         }
         return ResponseEntity.ok(new FailureResponseMessage());
     }

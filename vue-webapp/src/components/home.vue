@@ -4,22 +4,24 @@
         <div id="main">
             <h1 id="mainHeading">Overview</h1>
             <div id="lineSeperator"></div>
-            <div id="deviceList">
-                <h3 id="deviceListHeading">Endpoints</h3>
-                <input id="deviceSearch" type="text" placeholder="Search..."/>
+            <div id="endpointList">
+                <h3 id="endpointListHeading">Endpoints</h3>
+                <input id="endpointsearch" type="text" placeholder="Search..."/>
                 <div id="listItemContainer">
                     <endpointListItem 
-                        v-for="device in devices" :key=device.name
-                        v-bind:endpoint="device"/>
+                        v-for="endpoint in endpoints" :key=endpoint.name
+                        v-bind:endpoint="endpoint"/>
                 </div>
             </div>
-            <button class="graphButton" v-for="topic in graphTopics" :key=topic
-                    @click="createGraphView(topic)">Show Graph {{topic}}
-            </button>
-            <div class="graphContainer">
-                    <graphView
-                        v-for="count in graphCount" :key=count
-                        v-on:graphViewMounted="graphViewMounted"/>
+            <div id="endpointOverview">
+                <button class="graphButton" v-for="topic in graphTopics" :key=topic
+                        @click="createGraphView(topic)">Show Graph {{topic}}
+                </button>
+                <div class="graphContainer">
+                        <graphView
+                            v-for="count in graphCount" :key=count
+                            v-on:graphViewMounted="graphViewMounted"/>
+                </div>
             </div>
         </div>
   </div>
@@ -31,7 +33,6 @@ import { Component } from 'vue-property-decorator';
 import Navigationbar from './navigationbar.vue';
 import EndpointListItem from './endpointListItem.vue';
 import GraphView from './graphView.vue';
-import Device from '../classes/Endpoint';
 import Config from '../appConfig.json';
 import Axios, { AxiosResponse } from 'axios';
 import Endpoint from '../classes/Endpoint';
@@ -50,7 +51,7 @@ export default class Home extends Vue {
     private graphViews: GraphView[];
     private graphTopics: string[];
     private graphCounter: number;
-    private devices: Endpoint[];
+    private endpoints: Endpoint[];
 
 
     public constructor() {
@@ -59,7 +60,7 @@ export default class Home extends Vue {
         this.graphMapper = new Map();
         this.graphCounter = 0;
         this.graphTopics = ['graph/rand', 'graph/test'];
-        this.devices = [] as Endpoint[];
+        this.endpoints = [] as Endpoint[];
     }
 
     private get graphCount() : number {
@@ -83,30 +84,27 @@ export default class Home extends Vue {
         }
     }
 
-    private getDevices() : void {
-        console.log("getting devices for user " + this.$store.getters.username);
-			
-        this.devices = [] as Endpoint[];
-        console.log(this.devices);
+    private getEndpoints() : void {
+
+        this.endpoints = [] as Endpoint[];
         
-        Axios.get(Config.backendRecourceUrl + '/user/' + this.$store.getters.username + '/device/all',
+        Axios.get(Config.backendRecourceUrl + '/user/' + this.$store.getters.username + '/endpoint/all',
             { 
                 headers : this.$store.getters.authHeader
             })
         .then((response: AxiosResponse) => {
             let data = response.data;
             if(data.success) {
-                let resDevices: any[] = data.payload;
-                resDevices.forEach((device: any) => {
-                    this.devices.push(new Endpoint(device.name, device.description, device.token));
+                let resendpoints: any[] = data.payload;
+                resendpoints.forEach((endpoint: any) => {
+                    //this.endpoints.push(new Endpoint(endpoint.name, endpoint.description, endpoint.token));
                 })
             }
         });
     }
 
    mounted () {
-       console.log("getting devices");
-       this.getDevices();
+       this.getEndpoints();
    }
 }
 </script>
@@ -126,7 +124,7 @@ export default class Home extends Vue {
     font-weight: 600;
 }
 
-#deviceSearch {
+#endpointsearch {
     margin-left: 10px;
     width: 220px;
     margin-bottom: 20px;
@@ -136,20 +134,19 @@ export default class Home extends Vue {
     padding-left: 5px;
 }
 
-#deviceSearch::placeholder {
+#endpointsearch::placeholder {
     color: dimgray;
     font-style: italic;
 }
 
-#deviceListHeading {
+#endpointListHeading {
     margin: 5px 0 10px 10px;
 }
 
-#deviceList {
+#endpointList {
     position: relative;
     height: calc(100vh - 155px);
     width: 250px;
-    margin-right: 10px;
     float: left;
     background-color: #EEE;
 }
@@ -174,6 +171,12 @@ export default class Home extends Vue {
     width: 50%;
     height: 30px;
     background-color: white;
+}
+
+#endpointOverview {
+    float: left;
+    width: calc(100% - 270px);
+    padding: 0 10px 0 10px;
 }
 
 </style>

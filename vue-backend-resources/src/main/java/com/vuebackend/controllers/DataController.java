@@ -51,7 +51,7 @@ public class DataController {
                                                 request.getDatapoint().getValue(),
                                                 request.getDatapoint().getTime());
             this.datapointRepository.save(datapoint);
-            return ResponseEntity.ok(new SuccessResponseMessage());
+            return ResponseEntity.ok(new SuccessResponseMessage<Object>());
         }
         return ResponseEntity.ok(new FailureResponseMessage());
     }

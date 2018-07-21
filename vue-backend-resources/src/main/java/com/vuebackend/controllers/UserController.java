@@ -1,17 +1,20 @@
 package com.vuebackend.controllers;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
+import com.vuebackend.communication.GetAllEndpointsResponse;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
 import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.SuccessResponseMessage;
+import com.vuebackend.dbrepositories.EndpointRepository;
 import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.entities.Endpoint;
+import com.vuebackend.entities.Sensor;
 import com.vuebackend.entities.User;
+import com.vuebackend.entitiydata.EndpointData;
+import com.vuebackend.entitiydata.SensorData;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,9 @@ public class UserController {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    EndpointRepository endpointRepository;
 
     private static int minPasswordLength = 6;
     private static int minUsernameLength = 6;
@@ -74,16 +80,26 @@ public class UserController {
         return ResponseEntity.ok(true);
     }
 
-    @GetMapping("/{username}/device/all") 
+    @GetMapping("/{username}/endpoint/all") 
     public ResponseEntity<ResponseMessage> getAllEndpoints(@PathVariable(value="username") String username) {
 
         Iterator<Endpoint> endpointIterator = this.userRepository.getAllEndpoints(username).iterator();
-        List<Endpoint> endpoints = new ArrayList<>();
+        GetAllEndpointsResponse response = new GetAllEndpointsResponse();
 
         while(endpointIterator.hasNext()) {
-            endpoints.add(endpointIterator.next());
+            Endpoint endpoint = endpointIterator.next();
+            response.addEndpoint(new EndpointData(endpoint.getName(),
+                                                  endpoint.getDescription(),
+                                                  endpoint.getToken()));
         }
 
-        return ResponseEntity.ok(new SuccessResponseMessage<Endpoint[]>(endpoints.toArray(new Endpoint[endpoints.size()])));
+        for (EndpointData endpoint : response.getEndpoints()) {
+            Iterator<Sensor> sensorIterator = this.endpointRepository.getSensors(username, endpoint.getName()).iterator();
+            while(sensorIterator.hasNext()) {
+                Sensor sensor = sensorIterator.next();
+                endpoint.addSensor(new SensorData(sensor.getName(), sensor.getTopic()));
+            }
+        }
+        return ResponseEntity.ok(new SuccessResponseMessage<GetAllEndpointsResponse>(response));
     }
 }

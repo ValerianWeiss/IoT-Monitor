@@ -96,7 +96,7 @@ public class EndpointController {
             this.endpointRepository.save(newEndpoint);
             this.sensorRepository.save(sensor);
 
-            return ResponseEntity.ok(new SuccessResponseMessage(deviceToken));
+            return ResponseEntity.ok(new SuccessResponseMessage<String>(deviceToken));
         }
         return ResponseEntity.ok(new FailureResponseMessage());
     }
