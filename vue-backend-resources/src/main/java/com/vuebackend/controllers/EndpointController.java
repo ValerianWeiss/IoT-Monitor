@@ -65,10 +65,10 @@ public class EndpointController {
         
         Optional<User> user  = this.userRepository.findByUsername(request.getUsername());
         String deviceName = request.getName();
-        String sensorName = request.getSensorName();
+        String[] sensorNames = request.getSensorNames();
 
         if(user.isPresent() && deviceName != null && !deviceName.isEmpty()
-            && sensorName != null && !sensorName.isEmpty()) {
+            && sensorNames != null && sensorNames.length > 0) {
 
             if(this.userRepository.findEndpointByNameOfUser(request.getUsername(), deviceName).isPresent()) {
                 return ResponseEntity.ok(new FailureResponseMessage());
@@ -92,9 +92,12 @@ public class EndpointController {
                                            request.getDescription());
             }
 
-            Sensor sensor = new Sensor(sensorName, newEndpoint);
             this.endpointRepository.save(newEndpoint);
-            this.sensorRepository.save(sensor);
+
+            for (String sensorName : sensorNames) {
+                Sensor sensor = new Sensor(sensorName, newEndpoint);
+                this.sensorRepository.save(sensor);
+            }
 
             return ResponseEntity.ok(new SuccessResponseMessage<String>(deviceToken));
         }

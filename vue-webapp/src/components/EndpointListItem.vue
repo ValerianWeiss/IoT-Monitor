@@ -21,7 +21,6 @@ export default class EndpointListItem extends Vue {
     endpoint: Endpoint;
 
     private get endpointName() : string {
-        console.log(this.endpoint);
         return this.endpoint.getName();
     }
 }

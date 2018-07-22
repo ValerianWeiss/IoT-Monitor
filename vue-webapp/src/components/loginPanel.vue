@@ -137,17 +137,6 @@ export default class LoginPanel extends Vue {
     font-weight: 600;     
 }
 
-.hintText {
-    height: 8px;
-    font-weight: 400;
-    font-family: Arial, Helvetica, sans-serif;
-    position: relative;
-    margin: 2px 0 0 0;
-    font-size: 8px;
-    color: rgb(170, 2, 2);
-    font-style: italic;
-}
-
 #loginForm {
     transform: scale(1.2);
 }

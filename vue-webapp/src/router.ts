@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import VueRouter, { Route } from 'vue-router';
-import login from './components/login.vue';
-import home from './components/home.vue';
-import error from './components/error.vue';
+import Login from './components/login.vue';
+import Home from './components/home.vue';
+import Error from './components/error.vue';
+import EndpointOverview from './components/endpointOverview.vue';
+import AddEndpoint from './components/addEndpoint.vue'
 import Store from './store';
 
 Vue.use(VueRouter);
@@ -13,7 +15,7 @@ const Router = new VueRouter({
 		{   
 			path: '/',
 			name: 'login',
-			component: login,			
+			component: Login,			
 			beforeEnter: (to: Route, from: Route, next: any) : void => {
 				Store.getters.isTokenValid.then((result: boolean) => {
 					if(result) {
@@ -27,14 +29,38 @@ const Router = new VueRouter({
 		},
 		{
 			path: '/home',
-			name: 'home',
-			component: home,
-			beforeEnter: checkAuthentication,
+			component: Home,
+			beforeEnter: checkAuthentication,			
+			children: [
+				{
+					path: '',
+					component: EndpointOverview,
+					name: 'home', 
+				},
+
+				{
+					path: 'addEndpoint',
+					component: AddEndpoint,
+					name: 'add',
+				},
+
+				{
+					path: 'editEndpoint',
+					name: 'edit',
+					//component:
+				},
+
+				{
+					path: 'endpointInfo',
+					name: 'info'
+					//component:
+				}
+			]
 		},
 		{
 			path: '/error',
 			name: 'error',
-			component: error,
+			component: Error,
 		}
 	]
 });

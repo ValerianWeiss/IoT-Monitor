@@ -4,19 +4,20 @@ public class AddEndpointRequest {
     private String name;
     private String description;
     private String username;
-    private String sensorName;
+    private String[] sensorNames;
 
 
     public AddEndpointRequest(){}	
 
-	public AddEndpointRequest(String username, String name) {
-        this(username, name, null);
+	public AddEndpointRequest(String username, String name, String[] sensorNames) {
+        this(username, name, null, sensorNames);
     }
 
-    public AddEndpointRequest(String username, String name, String description) {
+    public AddEndpointRequest(String username, String name, String description, String[] sensorNames) {
         this.username = username;
         this.name = name;
         this.description = description;
+        this.sensorNames = sensorNames;
     }
 
     public String getUsername() {
@@ -31,11 +32,11 @@ public class AddEndpointRequest {
         return this.description;
     }
     
-    public String getSensorName() {
-		return sensorName;
+    public String[] getSensorNames() {
+		return sensorNames;
 	}
 
-	public void setSensorName(String sensorName) {
-		this.sensorName = sensorName;
+	public void setSensorNames(String[] sensorName) {
+		this.sensorNames = sensorName;
 	}
 }

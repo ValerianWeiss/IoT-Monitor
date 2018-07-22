@@ -43,6 +43,11 @@ export default class Navigationbar extends Vue {
     background-color: #72D9B4;
 }
 
+
+#logoutBtn:hover {
+	background-color: #a8f5d9;
+}
+
 .headings {
     text-align: center;
     letter-spacing: 0px;
