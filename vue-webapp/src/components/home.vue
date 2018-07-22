@@ -48,6 +48,7 @@ import Axios, { AxiosResponse } from 'axios';
 import Endpoint from '../classes/Endpoint';
 import { Route } from 'vue-router';
 import EndointOverview from './endpointOverview.vue';
+import Sensor from '../classes/Sensor';
 
 @Component({
     components: {
@@ -91,12 +92,18 @@ export default class Home extends Vue {
                 if(data.success) {
                     
                     let resendpoints: any[] = data.payload.endpoints;
-
+                    
                     for(let i = 0; i < resendpoints.length; i++) {
-                        this.endpoints.push(new Endpoint(resendpoints[i].name,
+                        let endpoint = new Endpoint(resendpoints[i].name,
                                                          resendpoints[i].description,
-                                                         resendpoints[i].token,
-                                                         resendpoints[i].sensors));
+                                                         resendpoints[i].token);
+
+                        for(let s = 0; s < resendpoints[i].sensors.length; s++) {
+                            let respSensor = resendpoints[i].sensors[s];
+                            let sensor = new Sensor(respSensor.name, respSensor.topic);
+                            endpoint.addSensor(sensor);
+                        }
+                        this.endpoints.push(endpoint);
                     }
                     this.sortEndpointList();                    
                 }

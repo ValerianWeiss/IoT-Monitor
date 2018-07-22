@@ -8,11 +8,17 @@ export default class Endpoint {
     private sensors: Sensor[];
 
 
-    constructor(name: string, description: string, token: string, sensors: Sensor[]) {
+    constructor(name: string, description: string, token: string, sensors?: Sensor[]) {
         this.name = name;
         this.description = description;
         this.token = token;
-        this.sensors = [];
+        
+        if(sensors != null) {
+            this.sensors = sensors;
+        } else {
+            this.sensors = [];
+        }
+
     }
 
     public getName() : string {
@@ -21,5 +27,13 @@ export default class Endpoint {
 
     public getDescription() : string {
         return this.description;
+    }
+
+    public getSensors() : Sensor[] {
+        return this.sensors;
+    }
+
+    public addSensor(sensor: Sensor) : void {
+        this.sensors.push(sensor);
     }
 }

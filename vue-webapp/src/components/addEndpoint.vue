@@ -2,7 +2,7 @@
 	<div id="addEndpoint">
 		<div id="addEndpointContainer">
 			<div id="form">
-				<h2>Add new endpoint</h2>
+				<h1>Add new endpoint</h1>
 				<input class="formInput" type="text" v-model="endpointName" placeholder="Endpoint name"/>
 				<p class="hintText">{{endpointNameText}}</p>
 				<textarea class="formInput" type="text" v-model="description" placeholder="Description of your endpoint..."/>
@@ -16,6 +16,7 @@
 				
 				<div id="addSensor" @click="addSensor">
 					<img id="addSensorImg" src="../recources/add.png" alt="Add sensor">
+					<p id="addSensorText">Add Sensor</p>
 				</div>
 				<button class="btn" id="addBtn" type="button" @click="addEndpoint">
 					<h3>Add Endpoint</h3>
@@ -154,7 +155,7 @@ export default class AddEndpoint extends Vue {
 #form {
 	position: relative;
 	float: left;
-	margin: 20px 20px 0 20px;
+	margin: 0 20px 0 20px;
 	width: 300px;
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -185,9 +186,10 @@ textarea {
 }
 
 #addBtn {
+	border-radius: 8px;
 	margin-top: 20px;
 	height: 35px;
-	width: 200px;
+	width: 100%;
 	background-color: #72d9b4;
 }
 
@@ -196,19 +198,30 @@ textarea {
 }
 
 #addSensor {
-	margin: 10px 0 0 0;
+	margin: 20px 0 0 0;
 	height: 30px;
-	width: 30px;
+	width: 100%;
+	background-color: #EEE;	
+	border-radius: 8px;
 }
 
 #addSensorImg {
 	position: relative;
-	margin: 5px 5px 5px 5px;
-	height: 20px;
-	width: 20px;
+	float: left;
+	margin: 7px 5px 7px 10px;
+	height: 15px;
+	width: 15px;
 }
 
 #addSensor:hover {
-  	background-color: #ccc;
+  	background-color: #CCC;
+}
+
+#addSensorText {
+	float: left;
+	margin: 8px 0 0 5px;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
 }
 </style>
