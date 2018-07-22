@@ -1,5 +1,5 @@
 <template>
-    <div id="endpointListItem">
+    <div id="endpointListItem" @click="onItemClick">
         <img src="../recources/device.png" id="deviceImg">
         <p id="itemName">{{endpointName}}</p>
     </div>
@@ -22,6 +22,11 @@ export default class EndpointListItem extends Vue {
 
     private get endpointName() : string {
         return this.endpoint.getName();
+    }
+
+    private onItemClick() : void {
+        this.$emit('activeEndpointChanged', this.endpoint);
+        this.$router.push('/home');
     }
 }
 </script>

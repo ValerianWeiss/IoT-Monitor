@@ -10,11 +10,15 @@
                     <div id="listItemContainer">
                         <endpointListItem 
                             v-for="endpoint in endpoints" :key=endpoint.name
-                            v-bind:endpoint="endpoint"/>
+                            v-bind:endpoint="endpoint"
+                            v-on:activeEndpointChanged="onActiveEndpointChanged"/>
                     </div>
                 </div>
 
                 <div id="actionBar">
+                    <div id="monitorIconContainer" class="barIconContainer" @click="onMonitorclick">
+                        <img class="barIcon" id="monitorIcon" src="../recources/monitor.png" alt="Show overview">
+                    </div>
                     <div class="barIconContainer" @click="onAddnewEndpoint">
                         <img class="barIcon" src="../recources/add.png" alt="Add new endpoint">
                     </div>
@@ -39,18 +43,15 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Navigationbar from './navigationbar.vue';
 import EndpointListItem from './endpointListItem.vue';
-import GraphView from './graphView.vue';
 import Config from '../appConfig.json';
 import Axios, { AxiosResponse } from 'axios';
 import Endpoint from '../classes/Endpoint';
 import { Route } from 'vue-router';
 import EndointOverview from './endpointOverview.vue';
-import value from '../appConfig.json';
 
 @Component({
     components: {
         Navigationbar,
-        GraphView,
         EndpointListItem,
         EndointOverview,
     }
@@ -58,47 +59,23 @@ import value from '../appConfig.json';
 export default class Home extends Vue {
     
     private graphMapper: Map<number, string>;
-    private graphViews: GraphView[];
-    private graphTopics: string[];
-    private graphCounter: number;
     private endpoints: Endpoint[];
     private activeEndpoint: Endpoint | null;
 
 
     public constructor() {
         super();
-        this.graphViews = [];
         this.graphMapper = new Map();
-        this.graphCounter = 0;
-        this.graphTopics = ['graph/rand', 'graph/test'];
         this.endpoints = [] as Endpoint[];      
         this.activeEndpoint = null;
-          
-    }
-
-    private get graphCount() : number {
-        return this.graphCounter;
     }
 
     private onAddnewEndpoint() {
         this.$router.push('home/addEndpoint');
     }
 
-    private createGraphView(topic: string) : void {
-        this.graphMapper.set(this.graphMapper.size, topic);
-        this.graphCounter = this.graphMapper.size;
-    }
-
-    private graphViewMounted(graphView: GraphView) : void {
-        let topic = this.graphMapper.get(this.graphViews.length);
-        this.graphViews.push(graphView);
-        graphView.setHeading('Hello World ' + this.graphViews.length);
-        if(topic != undefined) {
-            graphView.addDatapoint(topic);
-            graphView.setName(topic);
-        } else {
-            this.$router.push('/error');
-        }
+    private onMonitorclick() : void {
+        this.$router.push('/home');
     }
 
     private getEndpoints() : Promise<void> {
@@ -128,31 +105,36 @@ export default class Home extends Vue {
 
     private sortEndpointList() {
         this.endpoints.sort((a: Endpoint, b: Endpoint) : number => {
-			if(a.getName() < b.getName()) return -1;
-    		if(a.getName() > b.getName()) return 1;
+            let aName = a.getName().toLowerCase();
+            let bName = b.getName().toLowerCase();
+			if(aName < bName) return -1;
+    		if(aName > bName) return 1;
     		return 0;
 		});
     }
 
     private onItemChange(endpointName: string) {
 
-        let newActiveEndpoint: Endpoint;
-
         this.getEndpoints().then(() => {
             this.endpoints.forEach((endpoint: Endpoint, index: number,array: Endpoint[]) => {
                 if(endpoint.getName() == endpointName) {
-                    newActiveEndpoint = endpoint;
+                    this.activeEndpoint = endpoint;
                     return;
                 }
             });            
         });
     }
 
+    private onActiveEndpointChanged(endpoint: Endpoint) : void {
+        this.activeEndpoint = endpoint;
+    }
+
     private beforeMount () : void {
-        this.getEndpoints();
-        if(this.endpoints.length > 0) {
-            this.activeEndpoint = this.endpoints[0];
-        }
+        this.getEndpoints().then(() => {
+            if(this.endpoints.length > 0) {
+                this.activeEndpoint = this.endpoints[0];
+            }
+        });
     }
 }
 </script>
@@ -200,7 +182,7 @@ export default class Home extends Vue {
 }
 
 #listItemContainer {
-    overflow-x: auto;
+    overflow-y: auto;
     width: 100%;
     height: calc(100% - 71px);
 }
@@ -246,6 +228,14 @@ export default class Home extends Vue {
 
 #contentView {
     margin-left: 250px;
+}
+
+#monitorIconContainer {
+    width: 30px;
+}
+
+#monitorIcon {
+    width: 30px;
 }
 </style>
 

@@ -1,6 +1,8 @@
 <template>
 	<div id="endpointOverview">
-		<h1>{{endpointName}}</h1>		
+		<div id="overviewContainer">
+			<h1>{{endpointName}}</h1>		
+		</div>
 	</div>
 </template>
 
@@ -22,24 +24,19 @@ export default class EndpointOverView extends Vue {
 		}
 		return this.endpoint.getName();
 	}
-
-	mounted () {
-		if(this.endpoint != null)
-			console.log("heading should be "  + this.endpoint.getName());
-		
-	}
 }
 </script>
 
 <style scoped>
 
-#endpointOverview {
+#overviewContainer {
+	position: relative;
+	margin: 0 10px 0 10px;
     float: left;
-    width: calc(100% - 250px);
-	height: auto;
+    width: calc(100% - 20px);
 	background-color: blueviolet;
-	height: calc(100vh - 155px);
-	overflow: auto;
+	height: calc(100vh - 192px);
+	overflow-y: auto;
 }
 
 </style>
