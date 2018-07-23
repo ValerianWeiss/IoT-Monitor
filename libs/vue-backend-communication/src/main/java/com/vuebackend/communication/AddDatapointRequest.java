@@ -1,17 +1,17 @@
 package com.vuebackend.communication;
 
-import com.vuebackend.entitiydata.DataPointData;
+import com.vuebackend.entitiydata.DatapointData;
 
 public class AddDatapointRequest {
     private String username;
     private String endpointName;
     private String sensorName;
-    private DataPointData datapoint;
+    private DatapointData datapoint;
 
 
     public AddDatapointRequest(){}
 
-	public AddDatapointRequest(String endpointName, DataPointData dataPoint) {
+	public AddDatapointRequest(String endpointName, DatapointData dataPoint) {
         this.endpointName = endpointName;
         this.datapoint = dataPoint;
     }
@@ -20,7 +20,7 @@ public class AddDatapointRequest {
         return this.endpointName;
     }
 
-    public DataPointData getDatapoint() {
+    public DatapointData getDatapoint() {
         return this.datapoint;
     }
 
