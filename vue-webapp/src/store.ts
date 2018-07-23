@@ -56,8 +56,8 @@ const Store = new Vuex.Store({
 			state.websocket.subscribe(subInfo.topic, subInfo.callback);
 		},
 
-		unsubscribe(state) : void {
-			state.websocket.unsubscribe();
+		unsubscribe(state, topic?: string) : void {
+			state.websocket.unsubscribe(topic);
 		},
 
 		setUsername(state) : void {

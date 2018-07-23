@@ -1,7 +1,7 @@
 <template>
 	<div class="sensorView">
         <div id="sensorViewContainer">
-            <div id="headerBar" @click="onHeaderClick">
+            <div id="headerBar" @click="onHeaderClick(null)">
                 <h3 id="sensorName">{{sensor.getName()}}</h3>
                 <div v-if="!graphVisible" class="showIconContainer">
                     <img class="showIcon" src="../recources/down.png" alt="Show graph">
@@ -26,6 +26,9 @@ import { Chart } from 'chart.js';
 import ChartConfig from '../classes/ChartConfig';
 import Sensor from '../classes/Sensor';
 import ChartConfing from '../classes/ChartConfig';
+import { Frame } from 'stompjs';
+import Datapoint from '../classes/DataPoint';
+import { setInterval, clearInterval } from 'timers';
 
 @Component
 export default class sensorView extends Vue {
@@ -35,12 +38,19 @@ export default class sensorView extends Vue {
     private graphVisible: boolean;
     private chartConfig: any;
     private graph: Chart;
+    private nextValue: Datapoint;
+    private graphHeartbeat: number;
+    private drawGraph: any;
+    private deltaTime: number;
 
 
     public constructor() {
         super();
         this.graphVisible = false;
         this.chartConfig = new ChartConfing().chartConfing;
+        this.nextValue = new Datapoint(0);
+        this.graphHeartbeat = 300;
+        this.deltaTime = 0;
     }
 
     private get sensorName() {
@@ -50,8 +60,13 @@ export default class sensorView extends Vue {
         return this.sensor.getName();
     }
 
-    private onHeaderClick() : void {
-        this.graphVisible = !this.graphVisible;
+    public onHeaderClick(graphVisible?: boolean) : void {
+
+        if(graphVisible != null) {
+            this.graphVisible = graphVisible;
+        } else {
+            this.graphVisible = !this.graphVisible;
+        }
         
         if(this.graphVisible) {
             this.$emit('sensorActive', this.sensor);
@@ -59,10 +74,39 @@ export default class sensorView extends Vue {
             var ctx = canvas.getContext("2d");
             if(ctx != null) {
                 this.graph = new Chart(ctx, this.chartConfig);
-            }     
+                this.$store.commit('subscribe', {
+                    topic: this.sensor.getTopic(),
+                    callback: this.addDatapoint,
+                });
+                this.drawGraph = setInterval(this.draw, this.graphHeartbeat);
+            }   
         } else {
+            clearInterval(this.drawGraph);
+            this.$store.commit('unsubscribe', this.sensor.getTopic());
             this.$emit('sensorInactive', this.sensor);
         }
+    }
+
+    private addDatapoint(frame: Frame) {
+        if(frame != undefined) {
+            let datapoint: Datapoint = new Datapoint();
+            Object.assign(datapoint, JSON.parse(frame.body));
+            this.nextValue = datapoint;
+        }
+    }
+
+    private async draw() {
+        let labels = this.chartConfig.data.labels;
+        labels.shift();
+        labels.push((this.deltaTime/1000).toFixed(2));
+        this.deltaTime += this.graphHeartbeat; 
+        this.chartConfig.data.datasets.forEach((dataset: any) => {
+            if(dataset.data.length >= 10) {  
+                dataset.data.shift();
+            }
+            dataset.data.push(this.nextValue.getValue());
+        });
+        this.graph.update();
     }
 }
 </script>
