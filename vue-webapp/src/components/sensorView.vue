@@ -54,11 +54,14 @@ export default class sensorView extends Vue {
         this.graphVisible = !this.graphVisible;
         
         if(this.graphVisible) {
+            this.$emit('sensorActive', this.sensor);
             let canvas = this.$refs.canvas as HTMLCanvasElement;
             var ctx = canvas.getContext("2d");
             if(ctx != null) {
                 this.graph = new Chart(ctx, this.chartConfig);
             }     
+        } else {
+            this.$emit('sensorInactive', this.sensor);
         }
     }
 }
