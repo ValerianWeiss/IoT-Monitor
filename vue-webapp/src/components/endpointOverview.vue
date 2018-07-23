@@ -49,7 +49,7 @@ export default class EndpointOverview extends Vue {
 
 #overviewContainer {
 	position: relative;
-	margin: 0 20px 0 20px;
+	padding: 0 20px 0 20px;
     float: left;
     width: calc(100% - 40px);
 	height: calc(100vh - 192px);

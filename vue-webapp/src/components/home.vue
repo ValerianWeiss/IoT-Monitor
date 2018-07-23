@@ -182,7 +182,7 @@ export default class Home extends Vue {
 
 #endpointList {
     position: fixed;
-    height: calc(100vh - 155px);
+    height: calc(100vh - 152px);
     width: 250px;
     float: left;
     background-color: #EEE;

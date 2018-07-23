@@ -13,9 +13,12 @@ export default class ChartConfing {
         },
         options: {
             responsive: true,
+            legend: {
+                display: false
+            },
             title: {
                 display: false,
-                text: 'Chart.js Line Chart'
+                text: '',
             },
             tooltips: {
                 mode: 'index',
