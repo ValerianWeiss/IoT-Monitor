@@ -39,6 +39,7 @@ export default class LoginPanel extends Vue {
     private email: string = String.Empty;
     private loginContext: boolean = true;
     private minPasswordLength = 6;
+    private minUsernameLength = 6;
     private pwHintMessage: string = String.Empty;
     private userHintMessage: string = String.Empty;
 
@@ -63,8 +64,10 @@ export default class LoginPanel extends Vue {
         
         let hint: string = String.Empty;
 
-        if(this.password.length >= this.minPasswordLength && 
-                this.password == this.passwordRepeated) {
+        if(this.password.length >= this.minPasswordLength  
+            && this.password == this.passwordRepeated  
+            && this.username.length >= this.minUsernameLength) {
+
             Axios.post(this.userUrl, new RegisterRequest(this.username, this.password, 
                                                                 this.passwordRepeated)).
                 then(this.login).catch(errror => {
@@ -76,16 +79,18 @@ export default class LoginPanel extends Vue {
                 hint = 'Password must have at least 6 digest';
             } else if(this.password != this.passwordRepeated) {
                 hint = 'Passwords are not equal';
+            } else if(this.username.length < this.minUsernameLength) {
+                this.userHintMessage = 'Username must have at least 6 digest';
             }
         } 
         this.pwHintMessage = hint;
-        this.userHintMessage = String.Empty;
     }
     
     private login(response : AxiosResponse<ResponseMessage>) : void {
         if(response.data.success) {
             try {
                 localStorage.setItem(Config.tokenEntity, response.data.payload);
+                this.$store.commit('setUsername');
                 this.$router.push('/home');
             } catch (e) {
                 throw new Error('Invalid response format' + e);
@@ -121,26 +126,8 @@ export default class LoginPanel extends Vue {
     width: 250px;
 }
 
-.formInput {
-    width: 100%;
-    margin: 0;
-    padding: 5px 0 2px 0;
-    background: 0;
-    border: 0;
-    border-bottom: 1px solid #000;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 1px;
-    outline: 0;
-}
-
 .passInput {
     margin-bottom: 0px;
-}
-
-.formInput::placeholder {
-    color: dimgray;
-    font-style: italic;
 }
 
 .btn {
@@ -150,15 +137,8 @@ export default class LoginPanel extends Vue {
     font-weight: 600;     
 }
 
-.hintText {
-    height: 8px;
-    font-weight: 400;
-    font-family: Arial, Helvetica, sans-serif;
-    position: relative;
-    margin: 2px 0 0 0;
-    font-size: 8px;
-    color: rgb(170, 2, 2);
-    font-style: italic;
+#loginForm {
+    transform: scale(1.2);
 }
 </style>
 

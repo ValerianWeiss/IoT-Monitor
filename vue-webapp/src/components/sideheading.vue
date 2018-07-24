@@ -14,7 +14,7 @@ import { Component } from 'vue-property-decorator';
 export default class Sideheading extends Vue {
 
 	get heading() : string {
-		return this.$store.getters.getHeading;
+		return this.$store.getters.heading;
 	}
 
 	constructor(){

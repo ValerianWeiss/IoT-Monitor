@@ -8,6 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 public class VueBackendWebsocketsApplication {
 	public static void main(String[] args) {
-        SpringApplication.run(VueBackendWebsocketsApplication.class, args);
+		SpringApplication.run(VueBackendWebsocketsApplication.class, args);
 	}
 }

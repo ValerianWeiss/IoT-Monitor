@@ -5,7 +5,9 @@ body {
 }
 
 p {
-    font-family: 'Archivo Black', sans-serif;
+    margin: 0;
+    font-family: 'Archivo', sans-serif;
+    font-size: 12px;
 }
 
 h1 {
@@ -16,6 +18,12 @@ h1 {
 h2 {
     font-family: 'Archivo Black', sans-serif;
     font-size: 20px;
+}
+
+h3 {
+    font-family: 'Archivo', sans-serif;
+    font-size: 15px;
+    margin: 0;
 }
 
 .btn {
@@ -34,4 +42,34 @@ h2 {
 
 .doubleArrow {
     float: left;
+}
+
+.formInput {
+    width: 100%;
+    margin: 0;
+    padding: 5px 0 2px 0;
+    background: 0;
+    border: 0;
+    border-bottom: 1px solid #000;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    outline: 0;
+}
+
+.formInput::placeholder, textarea::-webkit-input-placeholder {
+    color: dimgray;
+    font-style: italic;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.hintText {
+    height: 8px;
+    font-weight: 400;
+    font-family: Arial, Helvetica, sans-serif;
+    position: relative;
+    margin: 2px 0 0 0;
+    font-size: 8px;
+    color: rgb(170, 2, 2);
+    font-style: italic;
 }

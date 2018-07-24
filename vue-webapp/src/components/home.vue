@@ -1,78 +1,146 @@
 <template>
-  <div id="home">
+    <div id="home">
         <navigationbar></navigationbar>
         <div id="main">
-            <h1 id="mainHeading">Content</h1>
-            <div id="lineSeperator"/>
-            <button class="graphButton" v-for="topic in graphTopics" :key=topic
-                    @click="createGraphView(topic)">Show Graph {{topic}}
-                </button>
-            <div class="graphContainer">
-                    <GraphView v-show="true"
-                        v-for="count in graphCount" :key=count
-                        v-on:graphViewMounted="graphViewMounted"/>
-            </div>
-            <button @click="newEndpoint">test</button>
+            <h1 id="mainHeading">Overview</h1>
+            <div id="lineSeperator"></div>
+                <div id="endpointList">
+                    <h3 id="endpointListHeading">Endpoints</h3>
+                    <input id="endpointsearch" type="text" placeholder="Search..."/>
+                    <div id="listItemContainer">
+                        <endpointListItem 
+                            v-for="endpoint in endpoints" :key=endpoint.name
+                            v-bind:endpoint="endpoint"
+                            v-on:activeEndpointChanged="onActiveEndpointChanged"/>
+                    </div>
+                </div>
+
+                <div id="actionBar">
+                    <div id="monitorIconContainer" class="barIconContainer" @click="onMonitorclick">
+                        <img class="barIcon" id="monitorIcon" src="../recources/monitor.png" alt="Show overview">
+                    </div>
+                    <div class="barIconContainer" @click="onAddnewEndpoint">
+                        <img class="barIcon" src="../recources/add.png" alt="Add new endpoint">
+                    </div>
+                    <div class="barIconContainer">
+                        <img class="barIcon" src="../recources/edit.png" alt="Edit endpoint">
+                    </div>
+                    <div class="barIconContainer">
+                        <img class="barIcon" src="../recources/info.png" alt="About endpoint">
+                    </div>
+                </div>
+                
+                <router-view id="contentView"
+                             v-bind:endpoint="activeEndpoint"
+                             v-on:itemChanged="onItemChange">
+                </router-view>
         </div>
-  </div>
+    </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Navigationbar from './navigationbar.vue';
-import GraphView from './graphView.vue';
-import Axios from 'axios';
+import EndpointListItem from './endpointListItem.vue';
+import Config from '../appConfig.json';
+import Axios, { AxiosResponse } from 'axios';
+import Endpoint from '../classes/Endpoint';
+import { Route } from 'vue-router';
+import EndointOverview from './endpointOverview.vue';
+import Sensor from '../classes/Sensor';
 
 @Component({
     components: {
         Navigationbar,
-        GraphView,
+        EndpointListItem,
+        EndointOverview,
     }
 })
 export default class Home extends Vue {
     
     private graphMapper: Map<number, string>;
-    private graphViews: GraphView[];
-    private graphTopics: string[];
-    private graphCounter: number;
+    private endpoints: Endpoint[];
+    private activeEndpoint: Endpoint | null;
 
-    public get graphCount() : number {
-        return this.graphCounter;
-    }
 
     public constructor() {
         super();
-        this.graphViews = [];
         this.graphMapper = new Map();
-        this.graphCounter = 0;
-        this.graphTopics = ['graph/rand', 'graph/test'];
+        this.endpoints = [] as Endpoint[];      
+        this.activeEndpoint = null;
     }
 
-    private createGraphView(topic: string) : void {
-        this.graphMapper.set( this.graphMapper.size, topic);
-        this.graphCounter = this.graphMapper.size;
+    private onAddnewEndpoint() {
+        this.$router.push('home/addEndpoint');
     }
 
-    private graphViewMounted(graphView: GraphView) : void {
-        let topic = this.graphMapper.get(this.graphViews.length);
-        this.graphViews.push(graphView);
-        graphView.setHeading('Hello World ' + this.graphViews.length);
-        if(topic != undefined) {
-            graphView.addDataEndpoint(topic);
-            graphView.setName(topic);
-        } else {
-            this.$router.push('/error');
-        }
+    private onMonitorclick() : void {
+        this.$router.push('/home');
     }
 
-    private newEndpoint() : void {
-       Axios.post("http://localhost:8090/endpoint", {
-            name:"testdevice",
-            description:"this is a test",
-            username:"hello"
-        }, {headers: this.$store.getters.getAuthHeader}).then(res => {
-            console.log(res);
+    private getEndpoints() : Promise<void> {
+
+        this.endpoints = [] as Endpoint[];
+        
+        return Axios.get(Config.backendRecourceUrl + '/user/' + this.$store.getters.username + '/endpoint/all',
+            { 
+                headers : this.$store.getters.authHeader
+            })
+            .then((response: AxiosResponse) => {
+                let data = response.data;
+                if(data.success) {
+                    
+                    let resendpoints: any[] = data.payload.endpoints;
+                    
+                    for(let i = 0; i < resendpoints.length; i++) {
+                        let endpoint = new Endpoint(resendpoints[i].name,
+                                                         resendpoints[i].description,
+                                                         resendpoints[i].token);
+
+                        for(let s = 0; s < resendpoints[i].sensors.length; s++) {
+                            let respSensor = resendpoints[i].sensors[s];
+                            let sensor = new Sensor(respSensor.name, respSensor.topic);
+                            endpoint.addSensor(sensor);
+                        }
+                        this.endpoints.push(endpoint);
+                    }
+                    this.sortEndpointList();                    
+                }
+            });
+    }
+
+    private sortEndpointList() {
+        this.endpoints.sort((a: Endpoint, b: Endpoint) : number => {
+            let aName = a.getName().toLowerCase();
+            let bName = b.getName().toLowerCase();
+			if(aName < bName) return -1;
+    		if(aName > bName) return 1;
+    		return 0;
+		});
+    }
+
+    private onItemChange(endpointName: string) {
+
+        this.getEndpoints().then(() => {
+            this.endpoints.forEach((endpoint: Endpoint, index: number,array: Endpoint[]) => {
+                if(endpoint.getName() == endpointName) {
+                    this.activeEndpoint = endpoint;
+                    return;
+                }
+            });            
+        });
+    }
+
+    private onActiveEndpointChanged(endpoint: Endpoint) : void {
+        this.activeEndpoint = endpoint;
+    }
+
+    private beforeMount () : void {
+        this.getEndpoints().then(() => {
+            if(this.endpoints.length > 0) {
+                this.activeEndpoint = this.endpoints[0];
+            }
         });
     }
 }
@@ -81,9 +149,11 @@ export default class Home extends Vue {
 <style scoped>
 
 #main {
-    width: 80vw;
-    padding: 30px;
-    margin: auto;
+    position: relative;
+    margin-left: 180px;
+    width: calc(100% - 180px);
+    height: calc(100% - 60px);
+    padding: 0;
 }
 
 #mainHeading {
@@ -91,9 +161,42 @@ export default class Home extends Vue {
     font-weight: 600;
 }
 
+#endpointsearch {
+    margin-left: 10px;
+    width: 220px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    height: 20px;
+    border: thin;
+    padding-left: 5px;
+}
+
+#endpointsearch::placeholder {
+    color: dimgray;
+    font-style: italic;
+}
+
+#endpointListHeading {
+    margin: 5px 0 10px 10px;
+}
+
+#endpointList {
+    position: fixed;
+    height: calc(100vh - 152px);
+    width: 250px;
+    float: left;
+    background-color: #EEE;
+}
+
+#listItemContainer {
+    overflow-y: auto;
+    width: 100%;
+    height: calc(100% - 71px);
+}
+
 #lineSeperator {
     position: relative;
-    margin: 0;
+    margin-left: 0px;
     width: 100%;
     background-color: black;
     height: 2px;
@@ -107,5 +210,39 @@ export default class Home extends Vue {
     background-color: white;
 }
 
+#actionBar {
+    margin-left: 250px;
+	width: calc(100% - 250px);
+	height: 40px;
+	background-color: #EEE;
+}
+
+.barIcon {
+	height: 20px;
+	width: 20px;
+}
+
+.barIconContainer {
+	float: left;
+	height: 20px;
+	width: 20px;
+	padding: 10px;
+}
+
+.barIconContainer:hover {
+	background-color: #CCC;
+}
+
+#contentView {
+    margin-left: 250px;
+}
+
+#monitorIconContainer {
+    width: 30px;
+}
+
+#monitorIcon {
+    width: 30px;
+}
 </style>
 

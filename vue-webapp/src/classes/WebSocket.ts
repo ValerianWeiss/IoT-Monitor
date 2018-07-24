@@ -25,19 +25,26 @@ export default class WebSocket {
     
     public subscribe(topic: string, callback: any) : void {
         let subscription = this.client.subscribe(Config.websocketTopicRoot + '/' + topic, callback);
-        this.subscriptions.push(subscription);
+        this.subscriptions.push({
+            subscription: subscription,
+            topic: topic,
+        });
     }
 
     public send(object: any, path: string) : void {
         this.client.send(Config.websocketSendPrefix + path, {}, JSON.stringify(object));
     }
 
-    public unsubscribe() : void {
-        console.log(this.subscriptions.length);
-        
-        if(this.subscriptions.length > 0) {
-            this.subscriptions.forEach(subscription => {
-                subscription.unsubscribe();
+    public unsubscribe(topic?: string) : void {
+        if(topic == null) {
+            this.subscriptions.forEach(subscriptionObj => {
+                subscriptionObj.subscription.unsubscribe();
+            });
+        } else {
+            this.subscriptions.forEach(subscriptionObj => {
+                if(subscriptionObj.topic == topic) {
+                    subscriptionObj.subscription.unsubscribe();
+                }
             });
         }
     }
