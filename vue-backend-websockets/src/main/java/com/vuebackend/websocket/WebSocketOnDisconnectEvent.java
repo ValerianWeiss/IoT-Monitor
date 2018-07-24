@@ -10,6 +10,7 @@ public class WebSocketOnDisconnectEvent implements ApplicationListener<SessionDi
 
     @Override 
     public void onApplicationEvent(SessionDisconnectEvent event) {
+        WebSocketOnConnectEvent.decrementActiveViewCount();
         System.out.println("A client disconnected. Total amount of connected clients: "
             + WebSocketOnConnectEvent.getActiveViewCount());
     }

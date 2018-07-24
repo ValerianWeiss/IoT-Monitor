@@ -12,10 +12,15 @@ public class WebSocketOnConnectEvent implements ApplicationListener<SessionConne
 
     public static int getActiveViewCount() {
         return activeViewCount;
-    }    
+    }  
+
+    public static void decrementActiveViewCount() {
+        activeViewCount--;
+    }
 
     @Override
     public void onApplicationEvent(SessionConnectedEvent event) {
+        activeViewCount++;
         System.out.println("A client connected. Total amount of connected clients: "
             + activeViewCount);
     }

@@ -73,7 +73,7 @@ public class DataController {
                                   request.getDatapoint().getTime(),
                                   sensor.get().getTopic()));
             
-                return ResponseEntity.ok(new SuccessResponseMessage<Object>());
+            return ResponseEntity.ok(new SuccessResponseMessage<Object>());
         }
         return ResponseEntity.ok(new FailureResponseMessage());
     }
