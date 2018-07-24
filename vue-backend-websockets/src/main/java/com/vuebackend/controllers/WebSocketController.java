@@ -19,6 +19,4 @@ public class WebSocketController {
             template.convertAndSend(simpleBrokerBasePath + '/' + topic, payload);
         }
     }
-
-
 }
