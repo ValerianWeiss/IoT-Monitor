@@ -7,8 +7,21 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 @Component
 public class WebSocketOnConnectEvent implements ApplicationListener<SessionConnectedEvent> {
 
+    private static int activeViewCount;
+
+
+    public static int getActiveViewCount() {
+        return activeViewCount;
+    }  
+
+    public static void decrementActiveViewCount() {
+        activeViewCount--;
+    }
+
     @Override
     public void onApplicationEvent(SessionConnectedEvent event) {
-        System.out.println("A view connected");
+        activeViewCount++;
+        System.out.println("A client connected. Total amount of connected clients: "
+            + activeViewCount);
     }
 }

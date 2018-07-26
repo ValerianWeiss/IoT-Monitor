@@ -24,17 +24,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private RestTemplate restTemplate;
 
 
-
     public JwtAuthorizationFilter(EurekaClient client, String authServerName, String tokenHeader) {
         this.tokenHeader = tokenHeader;
         this.restTemplate = new RestTemplate();
 
-        InstanceInfo service = null;
-
         System.out.println("Waiting for auth Server");
-        while(service == null) {
-            service = Registry.getInstance(client, authServerName);
-            this.tokenValidationUrl = service.getHostName() + ":" + service.getPort() + "/user/isTokenValid";
+        long timeout = System.currentTimeMillis() + 1000*60;
+
+        while(System.currentTimeMillis() < timeout) {
+            InstanceInfo service = Registry.getInstance(client, authServerName);
+            if(service != null) {
+                this.tokenValidationUrl = service.getHostName() + ":" + service.getPort() + "/user/isTokenValid";
+                break;
+            }
         }
     }
 

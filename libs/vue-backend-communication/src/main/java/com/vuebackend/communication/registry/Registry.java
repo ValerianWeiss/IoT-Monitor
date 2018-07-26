@@ -14,12 +14,10 @@ public class Registry {
 
             List<InstanceInfo> services = app.getInstances();
 
-            if(services.size() == 0) {
-                return services.get(0);
-            } 
-            
-            int index = (int) Math.round(Math.random() * (services.size() - 1));
-            return services.get(index);
+            if(services.size() > 0) {
+                int index = (int) Math.round(Math.random() * (services.size() - 1));
+                return services.get(index);
+            }
         }
         return null;
     }

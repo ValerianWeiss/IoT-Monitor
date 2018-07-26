@@ -2,17 +2,22 @@
 
 scriptDir=$(pwd)
 cd "./vue-backend-auth"
-gradle build 
+gradle build -x test
 
 cd $scriptDir
 
 cd "./vue-backend-resources"
-gradle build
+gradle build -x test
 
 cd $scriptDir
 
 cd "./vue-backend-websockets"
-gradle build
+gradle build -x test
+
+cd $scriptDir
+
+cd "./vue-backend-registry"
+gradle build -x test
 
 cd $scriptDir
 
