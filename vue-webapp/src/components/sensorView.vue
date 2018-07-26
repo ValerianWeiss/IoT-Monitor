@@ -49,7 +49,7 @@ export default class sensorView extends Vue {
         this.graphVisible = false;
         this.chartConfig = new ChartConfing().chartConfing;
         this.nextValue = new Datapoint(0);
-        this.graphHeartbeat = 300;
+        this.graphHeartbeat = 500;
         this.deltaTime = 0;
     }
 
