@@ -8,6 +8,7 @@ import com.vuebackend.communication.CreateTokenRequest;
 import com.vuebackend.communication.ErrorCause;
 import com.vuebackend.communication.ErrorCode;
 import com.vuebackend.communication.SuccessResponseMessage;
+import com.vuebackend.communication.registry.Registry;
 import com.vuebackend.communication.AddEndpointRequest;
 import com.vuebackend.communication.FailureResponseMessage;
 import com.vuebackend.communication.ResponseMessage;
@@ -17,6 +18,9 @@ import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.entities.Endpoint;
 import com.vuebackend.entities.Sensor;
 import com.vuebackend.entities.User;
+
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,8 +54,11 @@ public class EndpointController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${authServerAdress}")
-    private String authServerAdress;
+    @Value("${authServerName}")
+    private String authServerName;
+    
+    @Autowired
+    private EurekaClient eurekaClient;
 
 
     @Bean
@@ -116,8 +123,16 @@ public class EndpointController {
         headers.set("Content-Type", "application/json");
         HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
 
+        
+        InstanceInfo service = Registry.getInstance(this.eurekaClient, this.authServerName);
+
+        if(service == null) {
+            return null;
+        }
+
         String deviceToken = this.restTemplate.exchange(
-            authServerAdress + "/endpoint", HttpMethod.POST, entity, String.class).getBody();
+            service.getHostName() + ":" + service.getPort() + "/endpoint", HttpMethod.POST, entity, String.class).getBody();
+        
         return deviceToken;
     }
 }

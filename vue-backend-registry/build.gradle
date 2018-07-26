@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.1.RELEASE'
+		springBootVersion = '2.0.3.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -17,14 +17,16 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 bootJar {
-	baseName = 'vue-backend-recources'
-	group = 'com.vue-backend'
+	baseName = 'vue-backend-registry'
 	version = '0.0.1'
 }
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
 }
+
 
 dependencyManagement {
 	imports {
@@ -32,6 +34,14 @@ dependencyManagement {
 	}
 }
 
+dependencies {
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+repositories {
+	maven { url 'https://repo.spring.io/libs-snapshot' }
+}
 
 repositories {
     maven {
@@ -39,16 +49,10 @@ repositories {
     }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-dependencies {
-	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	runtime('mysql:mysql-connector-java')
-	compile project(':vue-backend-communication')
-	compile project(':vue-backend-security')
-	
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+eclipse {
+	classpath {
+		 containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+		 containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+	}
 }
+

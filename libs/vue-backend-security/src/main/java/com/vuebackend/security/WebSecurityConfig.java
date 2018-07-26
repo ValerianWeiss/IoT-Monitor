@@ -1,5 +1,8 @@
 package com.vuebackend.security;
 
+import com.netflix.discovery.EurekaClient;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,10 +19,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${tokenHeader}")
     private String tokenHeader;
-              
-    @Value("${tokenValidationUrl}")
-    private String tokenValidationUrl;
 
+    @Value("${authServerName}")
+    private String authServerName;
+
+    @Autowired
+    private EurekaClient client;
+              
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
@@ -39,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             // Custom JWT based security filter
             .addFilterBefore(new JwtAuthorizationFilter(
-                    tokenHeader, tokenValidationUrl), UsernamePasswordAuthenticationFilter.class)
+                client, authServerName, tokenHeader), UsernamePasswordAuthenticationFilter.class)
             
             .addFilterBefore(new CorsHeadersFilter(), CorsFilter.class);
     }

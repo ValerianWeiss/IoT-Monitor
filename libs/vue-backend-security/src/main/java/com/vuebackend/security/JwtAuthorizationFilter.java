@@ -12,7 +12,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpEntity;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import com.vuebackend.communication.TokenRequest;
+import com.vuebackend.communication.registry.Registry;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
@@ -20,10 +23,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private String tokenValidationUrl;
     private RestTemplate restTemplate;
 
-    public JwtAuthorizationFilter(String tokenHeader, String tokenValidationUrl) {
+
+
+    public JwtAuthorizationFilter(EurekaClient client, String authServerName, String tokenHeader) {
         this.tokenHeader = tokenHeader;
-        this.tokenValidationUrl = tokenValidationUrl;
         this.restTemplate = new RestTemplate();
+
+        InstanceInfo service = null;
+
+        System.out.println("Waiting for auth Server");
+        while(service == null) {
+            service = Registry.getInstance(client, authServerName);
+            this.tokenValidationUrl = service.getHostName() + ":" + service.getPort() + "/user/isTokenValid";
+        }
     }
 
     @Override
