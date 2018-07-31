@@ -17,9 +17,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${tokenHeader}")
     private String tokenHeader;
 
-    @Value("${authServerName}")
-    private String authServerName;
-
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {

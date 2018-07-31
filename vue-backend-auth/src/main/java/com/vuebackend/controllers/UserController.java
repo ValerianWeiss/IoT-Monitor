@@ -32,9 +32,6 @@ public class UserController {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${resourceServerName}")
-    private String resourceServerName;
-
     @Value("${gatewayAdress}")
     private String gatewayAddress;
 
