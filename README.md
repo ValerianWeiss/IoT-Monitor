@@ -1,4 +1,4 @@
-# Vue-Application
+# IoT-Monitor
 This is an example application for my studies. The project contains a Vue application which talks to a Spring Boot microservice. The microservice serves as an interface for a MySql database for the Vue app. The frontend communicates REST and STOMP websockets with the microservice.
 The Vue application integrates Vuex and Vue Router and is written in Typescript.
 
