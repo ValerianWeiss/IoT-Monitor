@@ -4,9 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
-
 import com.vuebackend.jwt.JWTTokenUtils;
 import com.vuebackend.communication.CreateTokenRequest;
 import com.vuebackend.communication.ErrorCause;
@@ -17,9 +14,7 @@ import com.vuebackend.communication.RegisterRequest;
 import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.communication.SuccessResponseMessage;
 import com.vuebackend.communication.TokenRequest;
-import com.vuebackend.communication.registry.Registry;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,11 +32,11 @@ public class UserController {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Autowired
-    private EurekaClient eurekaClient;
-
     @Value("${resourceServerName}")
     private String resourceServerName;
+
+    @Value("${gatewayAdress}")
+    private String gatewayAddress;
 
 
     @PutMapping
@@ -49,15 +44,8 @@ public class UserController {
             throws IllegalArgumentException, UnsupportedEncodingException {
 
                 
-        InstanceInfo service = Registry.getInstance(eurekaClient, resourceServerName);
-
-        if(service == null) {
-            return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.unknownError)));
-        }
-
         boolean isValid = this.restTemplate.postForObject(
-            service.getHostName() + ":" + service.getPort()
-                        + "/user/checkCredentials", loginRequest, Boolean.class);
+            gatewayAddress + "/user/checkCredentials", loginRequest, Boolean.class);
        
         if(isValid) {
             CreateTokenRequest tokenRequest = this.addUsernameClaim(loginRequest.getUsername());
@@ -71,14 +59,8 @@ public class UserController {
     public ResponseEntity<ResponseMessage> register(@RequestBody RegisterRequest registerRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
 
-        InstanceInfo service = Registry.getInstance(eurekaClient, resourceServerName);
-        
-        if(service == null) {
-            return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.unknownError)));
-        }
-
         boolean registrationSuccessful = this.restTemplate.postForObject(
-            service.getHostName() + ":" + service.getPort() + "/user/register", registerRequest, Boolean.class);
+            gatewayAddress + "/user/register", registerRequest, Boolean.class);
         
         if(registrationSuccessful) {
             return login(new LoginRequest(registerRequest.getUsername(), registerRequest.getPassword()));

@@ -8,36 +8,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpEntity;
 
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
 import com.vuebackend.communication.TokenRequest;
-import com.vuebackend.communication.registry.Registry;
 
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String tokenHeader;
-    private String tokenValidationUrl;
     private RestTemplate restTemplate;
 
+    @Value("${gatewayAddress}")
+    private String gatewayAddress;
 
-    public JwtAuthorizationFilter(EurekaClient client, String authServerName, String tokenHeader) {
+
+    public JwtAuthorizationFilter(String tokenHeader) {
         this.tokenHeader = tokenHeader;
         this.restTemplate = new RestTemplate();
-
-        System.out.println("Waiting for auth Server");
-        long timeout = System.currentTimeMillis() + 1000*60;
-
-        while(System.currentTimeMillis() < timeout) {
-            InstanceInfo service = Registry.getInstance(client, authServerName);
-            if(service != null) {
-                this.tokenValidationUrl = service.getHostName() + ":" + service.getPort() + "/user/isTokenValid";
-                break;
-            }
-        }
     }
 
     @Override
@@ -51,9 +40,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             authToken = requestHeader.substring(7);
 
             HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
-            
+
             boolean tokenIsValid = 
-                this.restTemplate.postForObject(this.tokenValidationUrl, tokenRequest, Boolean.class);
+                this.restTemplate.postForObject(this.gatewayAddress, tokenRequest, Boolean.class);
 
             if (!tokenIsValid) {
                 throw new IOException("Token was invalid!");

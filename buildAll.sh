@@ -21,6 +21,16 @@ gradle build -x test
 
 cd $scriptDir
 
+cd "./vue-backend-registry"
+gradle build -x test
+
+cd $scriptDir
+
+cd "./vue-backend-gateway"
+gradle build -x test
+
+cd $scriptDir
+
 cd "./vue-webapp"
 npm install
 npm run build
