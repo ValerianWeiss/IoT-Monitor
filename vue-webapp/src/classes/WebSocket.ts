@@ -11,7 +11,7 @@ export default class WebSocket {
 
     public constructor() {
         Axios.get(Config.backendUrl + '/websocket').then((res: AxiosResponse<any>) => {
-            let websocketUrl = res.data.websocketUrl;
+            let websocketUrl = res.data.websocketUrl + "/vueAppWebSock";
             console.log("got url " + websocketUrl);
             
             let client = Stomp.over(new SockJS(websocketUrl));
