@@ -2,6 +2,7 @@ import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { Client, Frame } from 'stompjs';
 import Config from '../appConfig.json';
+import Axios, { AxiosResponse } from 'axios';
 
 export default class WebSocket {
 
@@ -9,18 +10,23 @@ export default class WebSocket {
     private subscriptions: any[];
 
     public constructor() {
-        let client = Stomp.over(new SockJS(Config.websocketUrl));
-        client.connect({}, (frame?: Frame) : void => {
-            if(frame != null && frame != undefined) {
-                console.log(frame.body);
-            }
-        }, 
-        function(message?: string) : void {
-            console.error('Error occurred (WebSocket): ' + message);
-        });
+        Axios.get(Config.backendUrl + '/websocket').then((res: AxiosResponse<any>) => {
+            let websocketUrl = res.data.websocketUrl;
+            console.log("got url " + websocketUrl);
+            
+            let client = Stomp.over(new SockJS(websocketUrl));
+            client.connect({}, (frame?: Frame) : void => {
+                if(frame != null && frame != undefined) {
+                    console.log(frame.body);
+                }
+            }, 
+            function(message?: string) : void {
+                console.error('Error occurred (WebSocket): ' + message);
+            });
 
-        this.client = client;
-        this.subscriptions = [];
+            this.client = client;
+            this.subscriptions = [];
+        });
     }
     
     public subscribe(topic: string, callback: any) : void {

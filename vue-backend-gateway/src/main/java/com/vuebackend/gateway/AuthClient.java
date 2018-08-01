@@ -6,12 +6,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
+import com.vuebackend.communication.TokenRequest;
 
 @FeignClient("vue-backend-auth")
 public interface AuthClient {
+    
     @RequestMapping(value = "/user", method = RequestMethod.PUT)
     Object login(@RequestBody LoginRequest loginRequest);
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     Object register(@RequestBody RegisterRequest registerRequest);
+
+    @RequestMapping(value = "/user/isTokenValid/", method = RequestMethod.POST)
+    Object isTokenValid(@RequestBody TokenRequest request);
 }

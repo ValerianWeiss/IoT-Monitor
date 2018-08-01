@@ -32,7 +32,7 @@ public class UserController {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${gatewayAdress}")
+    @Value("${gatewayAddress}")
     private String gatewayAddress;
 
 
@@ -42,7 +42,7 @@ public class UserController {
 
                 
         boolean isValid = this.restTemplate.postForObject(
-            gatewayAddress + "/user/checkCredentials", loginRequest, Boolean.class);
+            this.gatewayAddress + "/user/checkCredentials", loginRequest, Boolean.class);
        
         if(isValid) {
             CreateTokenRequest tokenRequest = this.addUsernameClaim(loginRequest.getUsername());
@@ -55,9 +55,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ResponseMessage> register(@RequestBody RegisterRequest registerRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
-
+        
+        
         boolean registrationSuccessful = this.restTemplate.postForObject(
-            gatewayAddress + "/user/register", registerRequest, Boolean.class);
+            this.gatewayAddress + "/user/register", registerRequest, Boolean.class);
         
         if(registrationSuccessful) {
             return login(new LoginRequest(registerRequest.getUsername(), registerRequest.getPassword()));

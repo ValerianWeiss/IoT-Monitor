@@ -8,7 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpEntity;
@@ -19,13 +18,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String tokenHeader;
     private RestTemplate restTemplate;
-
-    @Value("${gatewayAddress}")
     private String gatewayAddress;
 
 
-    public JwtAuthorizationFilter(String tokenHeader) {
+    public JwtAuthorizationFilter(String tokenHeader, String gatewayAddress) {
         this.tokenHeader = tokenHeader;
+        this.gatewayAddress = gatewayAddress;
         this.restTemplate = new RestTemplate();
     }
 
@@ -42,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
 
             boolean tokenIsValid = 
-                this.restTemplate.postForObject(this.gatewayAddress, tokenRequest, Boolean.class);
+                this.restTemplate.postForObject(this.gatewayAddress + "/user/isTokenValid", tokenRequest, Boolean.class);
 
             if (!tokenIsValid) {
                 throw new IOException("Token was invalid!");

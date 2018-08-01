@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableEurekaClient
-@ComponentScan(basePackages="com.vuebackend.gateway")
+@ComponentScan(basePackages="com.vuebackend.gateway, com.vuebackend")
 public class GatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);

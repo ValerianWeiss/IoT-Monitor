@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.vuebackend.entitiydata.DatapointData;
+import com.vuebackend.websocket.WebSocketUtils;
 
 
 @Controller
-@SuppressWarnings("unused")
 public class DatapointController {
 
     @Autowired
@@ -25,7 +25,11 @@ public class DatapointController {
     @PutMapping("/datapoint")
     public ResponseEntity<?> publishDatapoint(@RequestBody DatapointData datapoint) {
         webSocket.send(datapoint.getTopic(), new Object(){
+
+            @SuppressWarnings("unused")
             public double value = datapoint.getValue();
+
+            @SuppressWarnings("unused")
             public long time = datapoint.getTime();
         });
         return ResponseEntity.ok().build();
