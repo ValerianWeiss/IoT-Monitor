@@ -28,7 +28,7 @@ start cmd /k "java -jar vue-backend-gateway-0.0.1.jar"
 
 cd %scriptDir%
 
-REM cd "./vue-webapp"
-REM start cmd /k "npm run dev"
+cd "./vue-webapp"
+start cmd /k "npm run dev"
 
-REM cd %scriptDir%
+cd %scriptDir%
