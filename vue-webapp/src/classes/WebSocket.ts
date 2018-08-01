@@ -12,12 +12,11 @@ export default class WebSocket {
     public constructor() {
         Axios.get(Config.backendUrl + '/websocket').then((res: AxiosResponse<any>) => {
             let websocketUrl = res.data.websocketUrl + "/vueAppWebSock";
-            console.log("got url " + websocketUrl);
             
             let client = Stomp.over(new SockJS(websocketUrl));
             client.connect({}, (frame?: Frame) : void => {
                 if(frame != null && frame != undefined) {
-                    console.log(frame.body);
+                    console.log("connected to websocket server");
                 }
             }, 
             function(message?: string) : void {
