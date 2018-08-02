@@ -32,20 +32,21 @@ public class UserController {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${resourceServer}")
-    private String resourceServerAdress;
+    @Value("${gatewayAddress}")
+    private String gatewayAddress;
 
 
     @PutMapping
     public ResponseEntity<ResponseMessage> login(@RequestBody LoginRequest loginRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
 
+                
         boolean isValid = this.restTemplate.postForObject(
-                                this.resourceServerAdress + "/user/checkCredentials", loginRequest, Boolean.class);
-
+            this.gatewayAddress + "/user/checkCredentials", loginRequest, Boolean.class);
+       
         if(isValid) {
             CreateTokenRequest tokenRequest = this.addUsernameClaim(loginRequest.getUsername());
-            return ResponseEntity.ok(new SuccessResponseMessage(JWTTokenUtils.create(tokenRequest, true)));
+            return ResponseEntity.ok(new SuccessResponseMessage<String>(JWTTokenUtils.create(tokenRequest, true)));
         } else {
             return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.credentialsIncorrect)));
         }
@@ -54,9 +55,10 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ResponseMessage> register(@RequestBody RegisterRequest registerRequest)
             throws IllegalArgumentException, UnsupportedEncodingException {
-
+        
+        
         boolean registrationSuccessful = this.restTemplate.postForObject(
-                    this.resourceServerAdress + "/user/register", registerRequest, Boolean.class);
+            this.gatewayAddress + "/user/register", registerRequest, Boolean.class);
         
         if(registrationSuccessful) {
             return login(new LoginRequest(registerRequest.getUsername(), registerRequest.getPassword()));

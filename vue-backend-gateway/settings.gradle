@@ -1,0 +1,4 @@
+include ':vue-backend-communication'
+project(':vue-backend-communication').projectDir = new File(settingsDir, '../libs/vue-backend-communication')
+
+rootProject.name = 'vue-backend-gateway'

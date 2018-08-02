@@ -43,7 +43,7 @@ export default class LoginPanel extends Vue {
     private pwHintMessage: string = String.Empty;
     private userHintMessage: string = String.Empty;
 
-    private userUrl: string = Config.backendAuthUrl + '/user';
+    private userUrl: string = Config.backendUrl + '/user';
 
 
     private onLogin() : void {

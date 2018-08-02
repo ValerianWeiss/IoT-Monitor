@@ -1,4 +1,4 @@
-package com.vuebackend.controllers;
+package com.vuebackend.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

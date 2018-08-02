@@ -83,7 +83,7 @@ export default class Home extends Vue {
 
         this.endpoints = [] as Endpoint[];
         
-        return Axios.get(Config.backendRecourceUrl + '/user/' + this.$store.getters.username + '/endpoint/all',
+        return Axios.get(Config.backendUrl + "/" + this.$store.getters.username + '/endpoint/all',
             { 
                 headers : this.$store.getters.authHeader
             })

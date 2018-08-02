@@ -52,8 +52,6 @@ export default class EndpointOverview extends Vue {
 			return String.Empty;
 		}
 		this.activeSensors = [];
-		console.log("reseted active endpoints");
-		
 		return this.endpoint.getName();
 	}
 

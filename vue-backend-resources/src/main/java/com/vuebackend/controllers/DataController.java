@@ -42,9 +42,9 @@ public class DataController {
 
     @Autowired
     private RestTemplate restTemplate;
-
-    @Value("${webSocketServerAddr}")
-    private String webSocketServerAddr;
+      
+    @Value("${gatewayAddress}")
+    private String gatewayAddress;
 
 
     @Bean
@@ -68,7 +68,7 @@ public class DataController {
                                                 request.getDatapoint().getTime());
             this.datapointRepository.save(datapoint);
             
-            this.restTemplate.put(this.webSocketServerAddr + "/datapoint",
+            this.restTemplate.put(this.gatewayAddress + "/datapoint",
                 new DatapointData(request.getDatapoint().getValue(),
                                   request.getDatapoint().getTime(),
                                   sensor.get().getTopic()));

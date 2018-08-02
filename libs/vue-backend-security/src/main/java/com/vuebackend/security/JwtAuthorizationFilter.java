@@ -17,12 +17,13 @@ import com.vuebackend.communication.TokenRequest;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private String tokenHeader;
-    private String tokenValidationUrl;
     private RestTemplate restTemplate;
+    private String gatewayAddress;
 
-    public JwtAuthorizationFilter(String tokenHeader, String tokenValidationUrl) {
+
+    public JwtAuthorizationFilter(String tokenHeader, String gatewayAddress) {
         this.tokenHeader = tokenHeader;
-        this.tokenValidationUrl = tokenValidationUrl;
+        this.gatewayAddress = gatewayAddress;
         this.restTemplate = new RestTemplate();
     }
 
@@ -37,9 +38,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             authToken = requestHeader.substring(7);
 
             HttpEntity<TokenRequest> tokenRequest = new HttpEntity<>(new TokenRequest(authToken));
-            
+
             boolean tokenIsValid = 
-                this.restTemplate.postForObject(this.tokenValidationUrl, tokenRequest, Boolean.class);
+                this.restTemplate.postForObject(this.gatewayAddress + "/user/isTokenValid", tokenRequest, Boolean.class);
 
             if (!tokenIsValid) {
                 throw new IOException("Token was invalid!");

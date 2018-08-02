@@ -16,9 +16,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${tokenHeader}")
     private String tokenHeader;
-              
-    @Value("${tokenValidationUrl}")
-    private String tokenValidationUrl;
+
+    @Value("${gatewayAddress}")
+    private String gatewayAddress;
 
 
     @Override
@@ -38,8 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             // Custom JWT based security filter
-            .addFilterBefore(new JwtAuthorizationFilter(
-                    tokenHeader, tokenValidationUrl), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtAuthorizationFilter(tokenHeader, this.gatewayAddress), UsernamePasswordAuthenticationFilter.class)
             
             .addFilterBefore(new CorsHeadersFilter(), CorsFilter.class);
     }
