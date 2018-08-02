@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.vuebackend.communication.AddDatapointRequest;
 import com.vuebackend.communication.AddEndpointRequest;
+import com.vuebackend.communication.CreateTokenRequest;
 import com.vuebackend.communication.FailureResponseMessage;
 import com.vuebackend.communication.LoginRequest;
 import com.vuebackend.communication.RegisterRequest;
@@ -65,25 +66,31 @@ public class APIGatewayController {
     }
 
     @GetMapping("/{username}/endpoint/all") 
-    public ResponseEntity<?> getAllEndpoints(@PathVariable(value="username") String username) {
-        return ResponseEntity.ok(this.resourcesClient.getEndpoints(username));
+    public ResponseEntity<?> getAllEndpoints(@PathVariable(value="username") String username,
+                                             @RequestHeader("Authorization") String token) {
+        
+        return ResponseEntity.ok(this.resourcesClient.getEndpoints(username, token));
     }
 
     @PostMapping("/data")
-    public ResponseEntity<?> addDatapoint(@RequestBody AddDatapointRequest request) {
-        return ResponseEntity.ok(this.resourcesClient.addDatapoint(request));
+    public ResponseEntity<?> addDatapoint(@RequestBody AddDatapointRequest request,
+                                          @RequestHeader("Authorization") String token) {
+
+        return ResponseEntity.ok(this.resourcesClient.addDatapoint(request, token));
     }
 
     @PostMapping("/endpoint")
     public ResponseEntity<?> addEndpoint(@RequestBody AddEndpointRequest request,
-                       @RequestHeader("Authorization") String headerValue) {
+                                         @RequestHeader("Authorization") String token) {
 
-        return ResponseEntity.ok(this.resourcesClient.addEndpoint(request, headerValue));
+        return ResponseEntity.ok(this.resourcesClient.addEndpoint(request, token));
     }
 
     @PostMapping("/sensor")
-    public ResponseEntity<?> addSensor(@RequestBody AddEndpointRequest request) {
-        return ResponseEntity.ok(this.resourcesClient.addSensor(request));
+    public ResponseEntity<?> addSensor(@RequestBody AddEndpointRequest request,
+                                       @RequestHeader("Authorization") String token) {
+        
+        return ResponseEntity.ok(this.resourcesClient.addSensor(request, token));
     }
 
     @GetMapping("/websocket")
@@ -124,6 +131,14 @@ public class APIGatewayController {
 
     @PutMapping("/datapoint")
     public ResponseEntity<?> publishDatapoint(@RequestBody DatapointData datapoint) {
+        
         return ResponseEntity.ok(this.websocketClient.publishDatapoint(datapoint));
+    }
+
+    @PostMapping("/endpoint/token")
+    public ResponseEntity<?> getDeviceToken(@RequestBody CreateTokenRequest request, 
+                                            @RequestHeader("Authorization") String token) {
+
+        return ResponseEntity.ok(this.authClient.getDeviceToken(request, token));
     }
 }

@@ -44,7 +44,6 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
-	compile('org.springframework.boot:spring-boot-starter-security')
 	compile project(':vue-backend-communication')
 
 	testCompile 'org.springframework.boot:spring-boot-starter-test'

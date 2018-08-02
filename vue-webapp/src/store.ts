@@ -29,10 +29,10 @@ const Store = new Vuex.Store({
 			return state.username;			
 		},
 
-		isTokenValid: async (state: any) : Promise<boolean> => {
+		isTokenValid: async () : Promise<boolean> => {
 			let token = localStorage.getItem(Config.tokenEntity);
 			if (token != null) {
-				let response = await Axios.post(Config.backendUrl + '/user/isTokenValid/', {token});
+				let response = await Axios.post(Config.backendUrl + '/user/isTokenValid', {token});
 				return response.data;
 			}
 			return false;

@@ -1,6 +1,7 @@
 package com.vuebackend.controllers;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import com.vuebackend.communication.ErrorCode;
 import com.vuebackend.communication.SuccessResponseMessage;
 import com.vuebackend.communication.AddEndpointRequest;
 import com.vuebackend.communication.FailureResponseMessage;
+import com.vuebackend.communication.GetAllEndpointsResponse;
 import com.vuebackend.communication.ResponseMessage;
 import com.vuebackend.dbrepositories.EndpointRepository;
 import com.vuebackend.dbrepositories.SensorRepository;
@@ -17,6 +19,8 @@ import com.vuebackend.dbrepositories.UserRepository;
 import com.vuebackend.entities.Endpoint;
 import com.vuebackend.entities.Sensor;
 import com.vuebackend.entities.User;
+import com.vuebackend.entitiydata.EndpointData;
+import com.vuebackend.entitiydata.SensorData;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +32,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -35,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
-@RequestMapping("/endpoint")
+@RequestMapping
 @CrossOrigin(origins = "${allowedOrigins}")
 public class EndpointController {
 
@@ -59,7 +65,7 @@ public class EndpointController {
         return builder.build();
     }
 
-    @PostMapping
+    @PostMapping("/endpoint")
     public ResponseEntity<ResponseMessage> addEndpoint(@RequestBody AddEndpointRequest request,
                                          @RequestHeader("Authorization") String headerValue) {
         
@@ -117,8 +123,31 @@ public class EndpointController {
         HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
 
         String deviceToken = this.restTemplate.exchange(
-            this.gatewayAddress + "/endpoint", HttpMethod.POST, entity, String.class).getBody();
+            this.gatewayAddress + "/endpoint/token", HttpMethod.POST, entity, String.class).getBody();
         
         return deviceToken;
+    }
+
+    @GetMapping("/{username}/endpoint/all") 
+    public ResponseEntity<ResponseMessage> getAllEndpoints(@PathVariable(value="username") String username) {
+
+        Iterator<Endpoint> endpointIterator = this.userRepository.getAllEndpoints(username).iterator();
+        GetAllEndpointsResponse response = new GetAllEndpointsResponse();
+
+        while(endpointIterator.hasNext()) {
+            Endpoint endpoint = endpointIterator.next();
+            response.addEndpoint(new EndpointData(endpoint.getName(),
+                                                  endpoint.getDescription(),
+                                                  endpoint.getToken()));
+        }
+
+        for (EndpointData endpoint : response.getEndpoints()) {
+            Iterator<Sensor> sensorIterator = this.endpointRepository.getSensors(username, endpoint.getName()).iterator();
+            while(sensorIterator.hasNext()) {
+                Sensor sensor = sensorIterator.next();
+                endpoint.addSensor(new SensorData(sensor.getName(), sensor.getTopic()));
+            }
+        }
+        return ResponseEntity.ok(new SuccessResponseMessage<GetAllEndpointsResponse>(response));
     }
 }

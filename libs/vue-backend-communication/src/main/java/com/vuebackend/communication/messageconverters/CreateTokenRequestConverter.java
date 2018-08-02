@@ -54,7 +54,7 @@ public class CreateTokenRequestConverter implements HttpMessageConverter<CreateT
         
         InputStream inStream = inputMessage.getBody();
         String content = this.getBodyContent(inStream);
-       
+
         JSONObject json = new JSONObject(content);
         
         boolean expires = json.getBoolean("expires");
