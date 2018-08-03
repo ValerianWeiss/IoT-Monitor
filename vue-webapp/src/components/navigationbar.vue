@@ -19,7 +19,7 @@ export default class Navigationbar extends Vue {
         this.$store.commit('unsubscribe');
         this.$store.commit('deleteToken');
         this.$store.commit('setUsername');
-        this.$router.push('/');
+        this.$router.push({path: '/', name: 'login'});
     }
 }
 </script>
