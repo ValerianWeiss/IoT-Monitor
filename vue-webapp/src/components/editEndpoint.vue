@@ -109,8 +109,7 @@ export default class EditEndpoint extends Vue {
         }, {
             headers : getAuthHeader(),
         }).then(() => {
-            this.$emit('itemChanged');
-            this.$router.push('/home');
+            this.$emit('itemChanged', this.endpoint.getName());
         });
     }
 
@@ -118,7 +117,7 @@ export default class EditEndpoint extends Vue {
         Axios.delete(Config.backendUrl + '/endpoint/' + this.endpoint.getName(), {
             headers : getAuthHeader(),
         }).then(() => {
-            this.$emit('itemChanged');
+            this.$emit('itemChanged', this.endpoint.getName());
             this.$router.push('/home');
         });
     }
@@ -131,8 +130,7 @@ export default class EditEndpoint extends Vue {
                 headers : getAuthHeader(),
             }
         ).then(() => {
-            this.$emit('itemChanged');
-            this.$router.push('/home');
+            this.$emit('itemChanged', this.endpoint.getName());
         });
     }
 }

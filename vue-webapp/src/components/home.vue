@@ -157,7 +157,12 @@ export default class Home extends Vue {
                     this.activeEndpoint = endpoint;
                     return;
                 }
-            });            
+            });
+            if(this.endpoints.length > 0) {
+                this.activeEndpoint = this.endpoints[0];
+            } else {
+                this.activeEndpoint = null;
+            }
         });
     }
 
