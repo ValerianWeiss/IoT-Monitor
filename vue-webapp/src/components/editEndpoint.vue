@@ -66,8 +66,6 @@ export default class EditEndpoint extends Vue {
         this.sensorNames.push(String.Empty);
     }
 
-    
-
     private get endpointName() : string {
 		if(this.endpoint == null) {
 			return String.Empty;
@@ -95,20 +93,23 @@ export default class EditEndpoint extends Vue {
     
     private addAllSensors() : void {
         
-        let promises: AxiosPromise[] = [];
+        let toadd: string[] = [];
 
-        this.sensorNames.forEach((sensor: string) => {
-            if(sensor != String.Empty) {
-                let promise = Axios.post(Config.backendUrl + '/sensor', {
-
-                }, {
-                    headers : getAuthHeader(),
-                });
-
-                promises.push(promise);
+        this.sensorNames.forEach((sensorName: string) => {
+            if(sensorName != String.Empty) {
+                toadd.push(sensorName);
             }
         });
-        Axios.all(promises).then(() => {
+
+        Axios.post(Config.backendUrl + '/sensor', {
+            endpointName: this.endpoint.getName(),
+            description: null,
+            sensorNames: toadd,
+
+        }, {
+            headers : getAuthHeader(),
+        }).then(() => {
+            this.$emit('itemChanged');
             this.$router.push('/home');
         });
     }
@@ -117,7 +118,7 @@ export default class EditEndpoint extends Vue {
         Axios.delete(Config.backendUrl + '/endpoint/' + this.endpoint.getName(), {
             headers : getAuthHeader(),
         }).then(() => {
-            this.$emit('updateList');
+            this.$emit('itemChanged');
             this.$router.push('/home');
         });
     }
@@ -128,10 +129,11 @@ export default class EditEndpoint extends Vue {
             + '/' + sensor.getName(),
             {
                 headers : getAuthHeader(),
-            }).then(() => {
-                this.$emit('updateList');
-                this.$router.push('/home');
-            });
+            }
+        ).then(() => {
+            this.$emit('itemChanged');
+            this.$router.push('/home');
+        });
     }
 }
 </script>

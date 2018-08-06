@@ -3,7 +3,7 @@ package com.vuebackend.communication;
 import com.vuebackend.entitiydata.DatapointData;
 
 public class AddDatapointRequest {
-    private String username;
+    
     private String endpointName;
     private String sensorName;
     private DatapointData datapoint;
@@ -22,10 +22,6 @@ public class AddDatapointRequest {
 
     public DatapointData getDatapoint() {
         return this.datapoint;
-    }
-
-    public String getUsername() {
-        return this.username;
     }
 
 	public String getSensorName() {

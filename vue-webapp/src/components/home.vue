@@ -33,7 +33,7 @@
                 <router-view id="contentView"
                              v-bind:endpoint="activeEndpoint"
                              v-on:itemChanged="onItemChange"
-                             v-on:updateList="getEndpoints">
+                             v-on:updateList="onItemChange">
                 </router-view>
         </div>
     </div>
@@ -112,14 +112,14 @@ export default class Home extends Vue {
 
         this.endpoints = [] as Endpoint[];
         
-        return Axios.get(Config.backendUrl + "/" + this.$store.getters.username + '/endpoint/all',
+        return Axios.get(Config.backendUrl + '/endpoint/all',
             { 
                 headers : getAuthHeader(),
             })
             .then((response: AxiosResponse) => {
                 let data = response.data;
                 if(data.success) {
-                    
+
                     let resendpoints: any[] = data.payload.endpoints;
                     
                     for(let i = 0; i < resendpoints.length; i++) {
@@ -134,7 +134,7 @@ export default class Home extends Vue {
                         }
                         this.endpoints.push(endpoint);
                     }
-                    this.sortEndpointList();                    
+                    this.sortEndpointList();
                 }
             });
     }

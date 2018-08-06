@@ -119,9 +119,8 @@ export default class AddEndpoint extends Vue {
 		if (this.endpointName != String.Empty && sortedSensorNames.length > 0 && sortedSensorNames != null) {
 			
 			Axios.post(Config.backendUrl + '/endpoint', {
-				name: this.endpointName,
+				endpointName: this.endpointName,
 				description: this.description,
-				username: this.$store.getters.username,
 				sensorNames: this.sensorNames,
 			},
 			{ 

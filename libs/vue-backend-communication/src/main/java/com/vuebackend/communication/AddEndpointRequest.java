@@ -1,31 +1,25 @@
 package com.vuebackend.communication;
 
 public class AddEndpointRequest {
-    private String name;
+    private String endpointName;
     private String description;
-    private String username;
     private String[] sensorNames;
 
 
     public AddEndpointRequest(){}	
 
-	public AddEndpointRequest(String username, String name, String[] sensorNames) {
-        this(username, name, null, sensorNames);
+	public AddEndpointRequest(String endpointName, String[] sensorNames) {
+        this(endpointName, null, sensorNames);
     }
 
-    public AddEndpointRequest(String username, String name, String description, String[] sensorNames) {
-        this.username = username;
-        this.name = name;
+    public AddEndpointRequest(String endpointName, String description, String[] sensorNames) {
+        this.endpointName = endpointName;
         this.description = description;
         this.sensorNames = sensorNames;
     }
 
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getName() {
-        return this.name;
+    public String getEndpointName() {
+        return this.endpointName;
     }
 
     public String getDescription() {

@@ -9,7 +9,6 @@ function addDatapoint() {
         if(Math.random() > 0.5) {
             datapoint = datapoint + Math.random()*6-2;
         axios.post('http://localhost:8090/data', {
-        username: 'asdasd',
         endpointName: 'Test2',
         sensorName: 'Sensor' + i,
         datapoint: {
