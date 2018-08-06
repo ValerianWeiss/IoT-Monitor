@@ -37,6 +37,10 @@ public class Endpoint {
         this.description = description;
         this.token = token;
     }
+
+    public long getId() {
+        return this.id;
+    }
     
 	public String getToken() {
 		return token;

@@ -6,10 +6,10 @@
             <div id="lineSeperator"></div>
                 <div id="endpointList">
                     <h3 id="endpointListHeading">Endpoints</h3>
-                    <input id="endpointsearch" type="text" placeholder="Search..."/>
+                    <input id="endpointsearch" type="text" placeholder="Search..." v-model="searchRegex" @focus="search">
                     <div id="listItemContainer">
                         <endpointListItem 
-                            v-for="endpoint in endpoints" :key=endpoint.name
+                            v-for="endpoint in dispEndpoints" :key=endpoint.name
                             v-bind:endpoint="endpoint"
                             v-on:activeEndpointChanged="onActiveEndpointChanged"/>
                     </div>
@@ -22,17 +22,18 @@
                     <div class="barIconContainer" @click="onAddnewEndpoint">
                         <img class="barIcon" src="../recources/add.png" alt="Add new endpoint">
                     </div>
-                    <div class="barIconContainer">
+                    <div class="barIconContainer" @click="onEditGetEndpoint">
                         <img class="barIcon" src="../recources/edit.png" alt="Edit endpoint">
                     </div>
-                    <div class="barIconContainer">
+                    <div class="barIconContainer" @click="onGetEndpointInfo">
                         <img class="barIcon" src="../recources/info.png" alt="About endpoint">
                     </div>
                 </div>
                 
                 <router-view id="contentView"
                              v-bind:endpoint="activeEndpoint"
-                             v-on:itemChanged="onItemChange">
+                             v-on:itemChanged="onItemChange"
+                             v-on:updateList="onItemChange">
                 </router-view>
         </div>
     </div>
@@ -49,6 +50,8 @@ import Endpoint from '../classes/Endpoint';
 import { Route } from 'vue-router';
 import EndointOverview from './endpointOverview.vue';
 import Sensor from '../classes/Sensor';
+import { String } from 'typescript-string-operations';
+import { getAuthHeader } from '../store';
 
 @Component({
     components: {
@@ -62,6 +65,7 @@ export default class Home extends Vue {
     private graphMapper: Map<number, string>;
     private endpoints: Endpoint[];
     private activeEndpoint: Endpoint | null;
+    private searchRegex : string;
 
 
     public constructor() {
@@ -69,28 +73,53 @@ export default class Home extends Vue {
         this.graphMapper = new Map();
         this.endpoints = [] as Endpoint[];      
         this.activeEndpoint = null;
+        this.searchRegex = String.Empty;
     }
 
-    private onAddnewEndpoint() {
-        this.$router.push('home/addEndpoint');
+    private get dispEndpoints() : Endpoint[] {
+        return this.search();
     }
 
     private onMonitorclick() : void {
         this.$router.push('/home');
     }
 
+    private onAddnewEndpoint() {
+        this.$router.push('/home/add');
+    }
+
+    private onGetEndpointInfo() : void {
+        this.$router.push('/home/info');
+    }
+
+     private onEditGetEndpoint() : void {
+        this.$router.push('/home/edit');
+    }
+
+    private search() : Endpoint[] {
+        
+        let resList : Endpoint[] = [];
+
+        this.endpoints.forEach((endpoint: Endpoint) => {
+            if(endpoint.getName().match(this.searchRegex)) {
+                resList.push(endpoint);
+            }
+        });
+        return resList;
+    }
+
     private getEndpoints() : Promise<void> {
 
         this.endpoints = [] as Endpoint[];
         
-        return Axios.get(Config.backendUrl + "/" + this.$store.getters.username + '/endpoint/all',
+        return Axios.get(Config.backendUrl + '/endpoint/all',
             { 
-                headers : this.$store.getters.authHeader
+                headers : getAuthHeader(),
             })
             .then((response: AxiosResponse) => {
                 let data = response.data;
                 if(data.success) {
-                    
+
                     let resendpoints: any[] = data.payload.endpoints;
                     
                     for(let i = 0; i < resendpoints.length; i++) {
@@ -105,7 +134,7 @@ export default class Home extends Vue {
                         }
                         this.endpoints.push(endpoint);
                     }
-                    this.sortEndpointList();                    
+                    this.sortEndpointList();
                 }
             });
     }
@@ -123,12 +152,17 @@ export default class Home extends Vue {
     private onItemChange(endpointName: string) {
 
         this.getEndpoints().then(() => {
-            this.endpoints.forEach((endpoint: Endpoint, index: number,array: Endpoint[]) => {
+            this.endpoints.forEach((endpoint: Endpoint) => {
                 if(endpoint.getName() == endpointName) {
                     this.activeEndpoint = endpoint;
                     return;
                 }
-            });            
+            });
+            if(this.endpoints.length > 0) {
+                this.activeEndpoint = this.endpoints[0];
+            } else {
+                this.activeEndpoint = null;
+            }
         });
     }
 

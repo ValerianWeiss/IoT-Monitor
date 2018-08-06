@@ -13,6 +13,7 @@ import com.vuebackend.entities.Datapoint;
 import com.vuebackend.entities.Endpoint;
 import com.vuebackend.entities.Sensor;
 import com.vuebackend.entitiydata.DatapointData;
+import com.vuebackend.security.JwtTokenClaimUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
@@ -53,14 +55,16 @@ public class DataController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> addDatapoint(@RequestBody AddDatapointRequest request) {
+    public ResponseEntity<ResponseMessage> addDatapoint(@RequestBody AddDatapointRequest request,
+                                                        @RequestHeader("Authorization") String token) {
         
+        String username = JwtTokenClaimUtils.getUsername(token);
+
         Optional<Endpoint> endpoint = 
-                userRepository.findEndpointByNameOfUser(request.getUsername(),
-                                                        request.getEndpointName());
+                userRepository.findEndpointByNameOfUser(username, request.getEndpointName());
 
         Optional<Sensor> sensor =
-                sensorRepository.findByName(request.getEndpointName(), request.getSensorName());
+                sensorRepository.findByName(username, request.getEndpointName(), request.getSensorName());
 
         if(endpoint.isPresent() && sensor.isPresent()) {
             Datapoint datapoint = new Datapoint(sensor.get(),

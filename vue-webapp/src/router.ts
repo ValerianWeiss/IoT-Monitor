@@ -4,7 +4,9 @@ import Login from './components/login.vue';
 import Home from './components/home.vue';
 import Error from './components/error.vue';
 import EndpointOverview from './components/endpointOverview.vue';
-import AddEndpoint from './components/addEndpoint.vue'
+import AddEndpoint from './components/addEndpoint.vue';
+import EndpointInfo from './components/endpointInfo.vue';
+import EditEndpoint from './components/editEndpoint.vue';
 import Store from './store';
 
 Vue.use(VueRouter);
@@ -35,25 +37,25 @@ const Router = new VueRouter({
 				{
 					path: '',
 					component: EndpointOverview,
-					name: 'home', 
+					name: 'home',
 				},
 
 				{
-					path: 'addEndpoint',
+					path: 'add',
 					component: AddEndpoint,
 					name: 'add',
 				},
 
 				{
-					path: 'editEndpoint',
+					path: 'edit',
 					name: 'edit',
-					//component:
+					component: EditEndpoint,
 				},
 
 				{
-					path: 'endpointInfo',
-					name: 'info'
-					//component:
+					path: 'info',
+					name: 'info',
+					component: EndpointInfo,
 				}
 			]
 		},
@@ -66,10 +68,11 @@ const Router = new VueRouter({
 });
 
 Router.beforeEach((to: Route, from: Route, next: any) => {
-	Store.commit('setHeading', to.name);
-	next();
-})
-
+	if(from != to) {
+		Store.commit('setHeading', to.name);
+		next();
+	}
+});
 
 function checkAuthentication(to: Route, from: Route, next: any) {
 	Store.getters.isTokenValid.then((result: boolean) => {

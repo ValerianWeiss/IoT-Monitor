@@ -21,10 +21,6 @@ const Store = new Vuex.Store({
 			return state.heading;
 		},
 
-		authHeader: () : any => {
-			return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity) };
-		},
-
 		username: (state) : String | null => {	
 			return state.username;			
 		},
@@ -74,6 +70,10 @@ function getUsername() : string | null {
 			return data["username"] as string;
 		}
 		return String.Empty;
+}
+
+export function getAuthHeader() : any {
+	return { Authorization : "Bearer " + localStorage.getItem(Config.tokenEntity) }
 }
 
 export default Store;

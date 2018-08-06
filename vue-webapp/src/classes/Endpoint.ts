@@ -33,6 +33,10 @@ export default class Endpoint {
         return this.sensors;
     }
 
+    public getToken() {
+        return this.token;
+    }
+
     public addSensor(sensor: Sensor) : void {
         this.sensors.push(sensor);
     }

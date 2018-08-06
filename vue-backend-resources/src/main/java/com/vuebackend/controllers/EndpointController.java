@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.vuebackend.communication.CreateTokenRequest;
 import com.vuebackend.communication.ErrorCause;
@@ -21,6 +22,7 @@ import com.vuebackend.entities.Sensor;
 import com.vuebackend.entities.User;
 import com.vuebackend.entitiydata.EndpointData;
 import com.vuebackend.entitiydata.SensorData;
+import com.vuebackend.security.JwtTokenClaimUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
-@RequestMapping
+@RequestMapping("/endpoint")
 @CrossOrigin(origins = "${allowedOrigins}")
 public class EndpointController {
 
@@ -65,35 +68,36 @@ public class EndpointController {
         return builder.build();
     }
 
-    @PostMapping("/endpoint")
+    @PostMapping
     public ResponseEntity<ResponseMessage> addEndpoint(@RequestBody AddEndpointRequest request,
-                                         @RequestHeader("Authorization") String headerValue) {
+                                                       @RequestHeader("Authorization") String token) {
         
-        Optional<User> user  = this.userRepository.findByUsername(request.getUsername());
-        String deviceName = request.getName();
+        String username = JwtTokenClaimUtils.getUsername(token);
+        Optional<User> user  = this.userRepository.findByUsername(username);
+        String endpointName = request.getEndpointName();
         String[] sensorNames = request.getSensorNames();
 
-        if(user.isPresent() && deviceName != null && !deviceName.isEmpty()
+        if(user.isPresent() && endpointName != null && !endpointName.isEmpty()
             && sensorNames != null && sensorNames.length > 0) {
 
-            if(this.userRepository.findEndpointByNameOfUser(request.getUsername(), deviceName).isPresent()) {
+            if(this.userRepository.findEndpointByNameOfUser(username, endpointName).isPresent()) {
                 return ResponseEntity.ok(new FailureResponseMessage());
             }
 
             Endpoint newEndpoint;
-            String deviceToken = getDeviceToken(request.getUsername(),
-                                                request.getName(),
-                                                headerValue);
+            String deviceToken = getDeviceToken(username,
+                                                request.getEndpointName(),
+                                                token);
 
             if(deviceToken == null) {
                 return ResponseEntity.ok(new FailureResponseMessage(new ErrorCause(ErrorCode.unknownError)));
             }
             
             if(request.getDescription() == null) {
-                newEndpoint = new Endpoint(user.get(), request.getName(), deviceToken);
+                newEndpoint = new Endpoint(user.get(), request.getEndpointName(), deviceToken);
             } else {
                 newEndpoint = new Endpoint(user.get(),
-                                           request.getName(),
+                                           request.getEndpointName(),
                                            deviceToken,
                                            request.getDescription());
             }
@@ -107,29 +111,33 @@ public class EndpointController {
 
             return ResponseEntity.ok(new SuccessResponseMessage<String>(deviceToken));
         }
+        System.out.println("hetrer!!!");
         return ResponseEntity.ok(new FailureResponseMessage());
     }
 
-    private String getDeviceToken(String username, String deviceName, String userHeader) {
-        Map<String, String> claims = new HashMap<>();
-        claims.put("username", username);
-        claims.put("deviceName", deviceName);
-        
-        CreateTokenRequest requestData = new CreateTokenRequest(false).addStringClaims(claims);
-        
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", userHeader);
-        headers.set("Content-Type", "application/json");
-        HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
+    @DeleteMapping("/{endpointName}")
+    public ResponseEntity<ResponseMessage> deleteEndpoint(@PathVariable(value="endpointName") String endpointName,
+                                                          @RequestHeader("Authorization") String token) {
 
-        String deviceToken = this.restTemplate.exchange(
-            this.gatewayAddress + "/endpoint/token", HttpMethod.POST, entity, String.class).getBody();
-        
-        return deviceToken;
+        String username = JwtTokenClaimUtils.getUsername(token);                                                                        
+        Optional<Endpoint> endpoint = this.userRepository.findEndpointByNameOfUser(username, endpointName);
+        if(endpoint.isPresent()) {
+            Set<Sensor> sensors = this.sensorRepository.findAllByEndpointId(endpoint.get().getId());
+            
+            for (Sensor sensor : sensors) {
+                this.sensorRepository.delete(sensor);
+            }
+
+            this.endpointRepository.delete(endpoint.get());
+            return ResponseEntity.ok(new SuccessResponseMessage<>());
+        }
+        return ResponseEntity.ok(new FailureResponseMessage());
     }
 
-    @GetMapping("/{username}/endpoint/all") 
-    public ResponseEntity<ResponseMessage> getAllEndpoints(@PathVariable(value="username") String username) {
+    @GetMapping("/all") 
+    public ResponseEntity<ResponseMessage> getAllEndpoints(@RequestHeader("Authorization") String token) {
+
+        String username = JwtTokenClaimUtils.getUsername(token);      
 
         Iterator<Endpoint> endpointIterator = this.userRepository.getAllEndpoints(username).iterator();
         GetAllEndpointsResponse response = new GetAllEndpointsResponse();
@@ -149,5 +157,23 @@ public class EndpointController {
             }
         }
         return ResponseEntity.ok(new SuccessResponseMessage<GetAllEndpointsResponse>(response));
+    }
+
+    private String getDeviceToken(String username, String deviceName, String userHeader) {
+        Map<String, String> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("deviceName", deviceName);
+        
+        CreateTokenRequest requestData = new CreateTokenRequest(false).addStringClaims(claims);
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", userHeader);
+        headers.set("Content-Type", "application/json");
+        HttpEntity<CreateTokenRequest> entity = new HttpEntity<>(requestData, headers);
+
+        String deviceToken = this.restTemplate.exchange(
+            this.gatewayAddress + "/endpoint/token", HttpMethod.POST, entity, String.class).getBody();
+        
+        return deviceToken;
     }
 }

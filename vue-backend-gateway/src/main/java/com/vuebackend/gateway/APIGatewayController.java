@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,18 +66,17 @@ public class APIGatewayController {
         return ResponseEntity.ok(this.authClient.register(registerRequest));
     }
 
-    @GetMapping("/{username}/endpoint/all") 
-    public ResponseEntity<?> getAllEndpoints(@PathVariable(value="username") String username,
-                                             @RequestHeader("Authorization") String token) {
-        
-        return ResponseEntity.ok(this.resourcesClient.getEndpoints(username, token));
-    }
-
     @PostMapping("/data")
     public ResponseEntity<?> addDatapoint(@RequestBody AddDatapointRequest request,
                                           @RequestHeader("Authorization") String token) {
 
         return ResponseEntity.ok(this.resourcesClient.addDatapoint(request, token));
+    }
+    
+    @GetMapping("/endpoint/all") 
+    public ResponseEntity<?> getAllEndpoints(@RequestHeader("Authorization") String token) {
+        
+        return ResponseEntity.ok(this.resourcesClient.getEndpoints(token));
     }
 
     @PostMapping("/endpoint")
@@ -86,11 +86,26 @@ public class APIGatewayController {
         return ResponseEntity.ok(this.resourcesClient.addEndpoint(request, token));
     }
 
+    @DeleteMapping("/endpoint/{endpointName}")
+    public ResponseEntity<?> deleteEndpoint(@PathVariable(value="endpointName") String endpointName,
+                                            @RequestHeader("Authorization") String token) {
+                                            
+        return ResponseEntity.ok(this.resourcesClient.deleteEndpoint(endpointName, token));
+    }
+
     @PostMapping("/sensor")
-    public ResponseEntity<?> addSensor(@RequestBody AddEndpointRequest request,
-                                       @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> addSensors(@RequestBody AddEndpointRequest request,
+                                        @RequestHeader("Authorization") String token) {
         
-        return ResponseEntity.ok(this.resourcesClient.addSensor(request, token));
+        return ResponseEntity.ok(this.resourcesClient.addSensors(request, token));
+    }
+
+    @DeleteMapping("/sensor/{endpointName}/{sensorName}")
+    public ResponseEntity<?> deleteSensor(@PathVariable(value="endpointName") String endpointName,
+                                          @PathVariable(value="sensorName") String sensorName,
+                                          @RequestHeader("Authorization") String token) {
+        
+        return ResponseEntity.ok(this.resourcesClient.deleteSensor(endpointName, sensorName, token));
     }
 
     @GetMapping("/websocket")

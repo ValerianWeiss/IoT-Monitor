@@ -26,7 +26,6 @@ export default class EndpointListItem extends Vue {
 
     private onItemClick() : void {
         this.$emit('activeEndpointChanged', this.endpoint);
-        this.$router.push('/home');
     }
 }
 </script>

@@ -74,8 +74,21 @@ export default class EndpointOverview extends Vue {
 				inactiveSensors.push(sensors[i]);
 			}
 		}
+		activeSensors = this.sortAlphabetically(activeSensors);
+		inactiveSensors = this.sortAlphabetically(inactiveSensors);
 		return activeSensors.concat(inactiveSensors);
 	}
+
+	private sortAlphabetically(list: Sensor[]) : Sensor[] {
+        list.sort((a: Sensor, b: Sensor) : number => {
+            let aName = a.getName().toLowerCase();
+            let bName = b.getName().toLowerCase();
+			if(aName < bName) return -1;
+    		if(aName > bName) return 1;
+    		return 0;
+		});
+		return list;
+    }
 
 	private expandAll() : void {
 		this.setGraphVisibility(true);

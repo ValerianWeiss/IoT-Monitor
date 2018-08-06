@@ -36,6 +36,7 @@ import { String } from 'typescript-string-operations';
 import Axios,{ AxiosResponse } from 'axios';
 import Config from '../appConfig.json';
 import ResponseMessage from '../classes/communication/ResponseMessage';
+import { getAuthHeader } from '../store';
 
 @Component
 export default class AddEndpoint extends Vue {
@@ -57,21 +58,21 @@ export default class AddEndpoint extends Vue {
 		if(this.endpointName == String.Empty) {
 			return String.Empty;
 		}
-		return "Endpoint name";
+		return 'Endpoint name';
 	}
 
 	private get descriptionText() : string {
 		if(this.description == String.Empty) {
 			return String.Empty;
 		}
-		return "Description";
+		return 'Description';
 	}
 
 	private getSensorNameText(index: number) : string {
 		if(this.sensorNames[index] == String.Empty) {
 			return String.Empty;
 		}
-		return "Sensor name";
+		return 'Sensor name';
 	}
 
 	private sortSensorNames(list: string[]) : string[] {
@@ -116,22 +117,18 @@ export default class AddEndpoint extends Vue {
 		sortedSensorNames = this.removeDoubledItems(sortedSensorNames);
 
 		if (this.endpointName != String.Empty && sortedSensorNames.length > 0 && sortedSensorNames != null) {
-			console.log("send post request");
 			
 			Axios.post(Config.backendUrl + '/endpoint', {
-				name: this.endpointName,
+				endpointName: this.endpointName,
 				description: this.description,
-				username: this.$store.getters.username,
 				sensorNames: this.sensorNames,
 			},
 			{ 
-				headers: this.$store.getters.authHeader
+				headers: getAuthHeader(),
 			})
 			.then((response: AxiosResponse<ResponseMessage>) : void =>{
 				let data = response.data;
 				if(data.success) {
-					console.log("emited itemchaged event");
-					
 					this.$emit('itemChanged', this.endpointName);
 					this.$router.push('/home');
 				}
