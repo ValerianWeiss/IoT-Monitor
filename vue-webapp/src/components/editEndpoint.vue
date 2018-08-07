@@ -1,6 +1,6 @@
 <template>
 	<div id="editEndpoint">
-        <div id="editEndpointContainer">
+        <div id="editEndpointContainer" v-if="endpoint!=null">
             <div id="deleteContainer">
                 <h1 id="endpointName">{{endpointName}}</h1>
                 <button class="btn deleteBtn" @click="deleteEndpoint"><h3>Delete</h3></button>
