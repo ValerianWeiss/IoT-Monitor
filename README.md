@@ -1,7 +1,8 @@
 # IoT-Monitor
 This is an example application for my studies. It represents a web platform where you can add endpoints to your account. After you’ve added an endpoint the application is able to receive and display the data, the endpoint is sending to the api. A example HTTP request to add a data point could look like this:
 
-*HTTP method: POST  
+*Url: <$Api-gateway-url>/data  
+HTTP method: POST  
 Request headers: Authorization: "Bearer eyJ0eXAiOiJsdaa1QiLCasdzI1NiJ9.eyJpasfYXQiOjEfYXQiOjE1M1MzMyM..."*
 
 ```json
