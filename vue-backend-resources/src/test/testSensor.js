@@ -9,16 +9,14 @@ function addDatapoint() {
         if(Math.random() > 0.5) {
             datapoint = datapoint + Math.random()*6-2;
         axios.post('http://localhost:8090/data', {
-        endpointName: 'TestEndpoint',
         sensorName: 'Sensor' + i,
         datapoint: {
             value: datapoint,
-            time: new Date().getTime(),
-            topic: ''
+            time: new Date().getTime()
         }
         },
         {
-            headers : { Authorization : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1MzMyMjA1MTgsImRldmljZU5hbWUiOiJkYXNkYXNkYXNkIiwidXNlcm5hbWUiOiJhc2Rhc2QifQ.L_ywa2BlVR5CnASy61ZMzadgEi5G6uSK93jNUg_SvL4" }
+            headers : { Authorization : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbmRwb2ludE5hbWUiOiJFbmQiLCJpYXQiOjE1MzM2NzgwNDMsInVzZXJuYW1lIjoiYXNkYXNkIn0.0vaF6Sg4xPaqEPL6gnjJv3I59XgBjFaix8D02qVWDgI" }
         });
         }
     }

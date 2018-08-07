@@ -111,7 +111,6 @@ public class EndpointController {
 
             return ResponseEntity.ok(new SuccessResponseMessage<String>(deviceToken));
         }
-        System.out.println("hetrer!!!");
         return ResponseEntity.ok(new FailureResponseMessage());
     }
 
@@ -159,10 +158,10 @@ public class EndpointController {
         return ResponseEntity.ok(new SuccessResponseMessage<GetAllEndpointsResponse>(response));
     }
 
-    private String getDeviceToken(String username, String deviceName, String userHeader) {
+    private String getDeviceToken(String username, String endpointName, String userHeader) {
         Map<String, String> claims = new HashMap<>();
         claims.put("username", username);
-        claims.put("deviceName", deviceName);
+        claims.put("endpointName", endpointName);
         
         CreateTokenRequest requestData = new CreateTokenRequest(false).addStringClaims(claims);
         

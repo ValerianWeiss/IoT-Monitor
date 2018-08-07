@@ -119,6 +119,12 @@ export default class EndpointOverview extends Vue {
 			this.activeSensors.splice(index, 1);
 		}
 	}
+
+	private beforeDestroy () {
+		this.endpoint.getSensors().forEach((sensor: Sensor) => {
+			this.$store.commit('unsubscribe', sensor.getTopic());
+		})
+	}
 }
 </script>
 

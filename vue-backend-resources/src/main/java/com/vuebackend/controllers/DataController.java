@@ -59,17 +59,19 @@ public class DataController {
                                                         @RequestHeader("Authorization") String token) {
         
         String username = JwtTokenClaimUtils.getUsername(token);
+        String endpointName = JwtTokenClaimUtils.getEndpointname(token);
 
         Optional<Endpoint> endpoint = 
-                userRepository.findEndpointByNameOfUser(username, request.getEndpointName());
+                userRepository.findEndpointByNameOfUser(username, endpointName);
 
         Optional<Sensor> sensor =
-                sensorRepository.findByName(username, request.getEndpointName(), request.getSensorName());
+                sensorRepository.findByName(username, endpointName, request.getSensorName());
 
         if(endpoint.isPresent() && sensor.isPresent()) {
             Datapoint datapoint = new Datapoint(sensor.get(),
                                                 request.getDatapoint().getValue(),
                                                 request.getDatapoint().getTime());
+
             this.datapointRepository.save(datapoint);
             
             this.restTemplate.put(this.gatewayAddress + "/datapoint",

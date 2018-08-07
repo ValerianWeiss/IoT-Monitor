@@ -4,20 +4,15 @@ import com.vuebackend.entitiydata.DatapointData;
 
 public class AddDatapointRequest {
     
-    private String endpointName;
     private String sensorName;
     private DatapointData datapoint;
 
 
     public AddDatapointRequest(){}
 
-	public AddDatapointRequest(String endpointName, DatapointData dataPoint) {
-        this.endpointName = endpointName;
+	public AddDatapointRequest(String sensorName, DatapointData dataPoint) {
+        this.sensorName = sensorName;
         this.datapoint = dataPoint;
-    }
-
-    public String getEndpointName() {
-        return this.endpointName;
     }
 
     public DatapointData getDatapoint() {
