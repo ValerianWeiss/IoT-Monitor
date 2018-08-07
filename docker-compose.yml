@@ -1,5 +1,6 @@
 version: '3.1'
 services:
+
   # MySql database
   database:
     image: mysql
@@ -8,30 +9,46 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"      
       MYSQL_USER: springuser
       MYSQL_PASSWORD: test123
-      MYSQL_DATABASE: testDB
+      MYSQL_DATABASE: iotMonitorDB
     ports:
-      - 3306:3306
+      - 3300:3306
+
+  # Service registry
+  registry:
+    build: ./vue-backend-registry
+    restart: always
+    depends_on:
+      - database
+
+  # REST Api gateway service
+  gateway:
+    build: ./vue-backend-gateway
+    restart: always 
+    ports:
+      - 8090:8090
+    depends_on:
+      - database
   
-  # Login service
-  backend:
+  # Auth service
+  auth:
     build: ./vue-backend-auth
     restart: always
-    ports:
-      - 8091:8091
+    depends_on:
+      - database
 
-  # REST Api recurces service
-  backend:
+  # REST Api resources service
+  resources:
     build: ./vue-backend-resources
     restart: always
-    ports:
-      - 8090:8090
+    depends_on:
+      - database
 
   # Websocket Service
-  backend:
-    build: ./vue-backend-resources
+  websocket:
+    build: ./vue-backend-websockets
     restart: always
-    ports:
-      - 8090:8090
+    depends_on:
+      - database
 
   # A tomcat servlet which contains the vue app
   webserver:
@@ -40,4 +57,4 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - backend
+      - database
