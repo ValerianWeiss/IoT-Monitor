@@ -1,5 +1,19 @@
 # IoT-Monitor
-This is an example application for my studies. It represents a web platform where you can add endpoints to your account. After you’ve added an endpoint the application is able to receive and display the data, the endpoint is sending to the api.
+This is an example application for my studies. It represents a web platform where you can add endpoints to your account. After you’ve added an endpoint the application is able to receive and display the data, the endpoint is sending to the api. A example HTTP request to add a data point could look like this:
+
+*HTTP method: POST  
+Request headers: Authorization: "Bearer eyJ0eXAiOiJsdaa1QiLCasdzI1NiJ9.eyJpasfYXQiOjEfYXQiOjE1M1MzMyM..."*
+
+```json
+{
+  "endpointName": "Endpoint",
+  "sensorName": "Sensor",
+  "datapoint": {
+      "value": 12.21,
+      "time": 1533675296
+  }
+}
+```
 
 ![Diagram of project structure](https://github.com/ValerianWeiss/IoT-Monitor/blob/auth/IoT-Monitor.PNG?raw=true)
 
