@@ -16,6 +16,8 @@ Request headers: Authorization: "Bearer eyJ0eXAiOiJsdaa1QiLCasdzI1NiJ9.eyJpasfYX
 }
 ```
 
+Video demo: https://vimeo.com/283813972
+
 ![Diagram of project structure](https://github.com/ValerianWeiss/IoT-Monitor/blob/auth/IoT-Monitor.PNG?raw=true)
 
 On https://hub.docker.com/r/valerianhses/iot-monitor/ you can download the different parts of the system as docker images and run all the images locally. Make sure that you configure them the right way, when you start them. You can find a example configuration in the `docker-compose.yml`. For the database image you can just download the mysql image and configure it with the given configuration.
