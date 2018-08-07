@@ -5,8 +5,9 @@ services:
   database:
     image: mysql
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"      
+      MYSQL_ROOT_PASSWORD: vs4dds4sd4ss6sd88daa2
       MYSQL_USER: springuser
       MYSQL_PASSWORD: test123
       MYSQL_DATABASE: iotMonitorDB
@@ -17,6 +18,7 @@ services:
   registry:
     build: ./vue-backend-registry
     restart: always
+    network_mode: "host"
     depends_on:
       - database
 
@@ -24,8 +26,7 @@ services:
   gateway:
     build: ./vue-backend-gateway
     restart: always 
-    ports:
-      - 8090:8090
+    network_mode: "host"
     depends_on:
       - database
   
@@ -33,6 +34,7 @@ services:
   auth:
     build: ./vue-backend-auth
     restart: always
+    network_mode: "host"
     depends_on:
       - database
 
@@ -40,6 +42,7 @@ services:
   resources:
     build: ./vue-backend-resources
     restart: always
+    network_mode: "host"
     depends_on:
       - database
 
@@ -47,6 +50,7 @@ services:
   websocket:
     build: ./vue-backend-websockets
     restart: always
+    network_mode: "host"
     depends_on:
       - database
 

@@ -1,7 +1,7 @@
 FROM tomcat
 WORKDIR /usr/local/tomcat/webapps
-#TODO: Says directory is not existing
-#RUN [ "rm", "-r", "./ROOT/*"]
 RUN [ "mkdir", "./ROOT/dist" ]
-COPY ./index.html ./ROOT
+RUN [ "mkdir", "./ROOT/src" ]
+COPY ./src/main.css ./ROOT/src
 COPY ./dist ./ROOT/dist
+COPY ./index.html ./ROOT

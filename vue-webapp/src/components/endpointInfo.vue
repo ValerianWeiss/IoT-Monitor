@@ -1,6 +1,6 @@
 <template>
 	<div id="endpointInfo">
-        <div id="infoContainer">
+        <div id="infoContainer" v-if="endpoint!=null">
             <h1>{{endpointName}}</h1>
             <div id="tokenContainer">
                 <h3 id="tokenHeading">Token</h3>
