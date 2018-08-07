@@ -18,7 +18,7 @@ Request headers: Authorization: "Bearer eyJ0eXAiOiJsdaa1QiLCasdzI1NiJ9.eyJpasfYX
 
 ![Diagram of project structure](https://github.com/ValerianWeiss/IoT-Monitor/blob/auth/IoT-Monitor.PNG?raw=true)
 
-On https://hub.docker.com/r/valerianhses/iot-monitor/ you can download the different parts of the system as docker images and run all the images localy. Make sure that you configure them the right way, when you start them. You can find a example configuration in the `docker-compose.yml`.
+On https://hub.docker.com/r/valerianhses/iot-monitor/ you can download the different parts of the system as docker images and run all the images locally. Make sure that you configure them the right way, when you start them. You can find a example configuration in the `docker-compose.yml`. For the database image you can just download the mysql image and configure it with the given configuration.
 
 ## Used Technologies
 The project contains a Vue application (written in typescript) which talks over REST and STOMP websockets to several Spring Boot microservices. All data which has to be persisted is getting stored in a MySql database.
@@ -68,5 +68,3 @@ docker-compose build
 docker-compose up
 ```
 Alternatively you can build the Docker files by hand and manage the containers on your own.
-
-
